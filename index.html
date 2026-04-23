@@ -1,19 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>☀️</text></svg>">
     <title>New Leaf | Finding Hope</title>
     <link rel="stylesheet" href="style.css">
-    <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Playfair+Display:italic,wght@700&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Playfair+Display:italic,wght@700&display=swap" rel="stylesheet">
 </head>
-
 <body>
-
     <div class="theme-container">
         <label class="theme-switch" for="checkbox">
             <input type="checkbox" id="checkbox" />
@@ -23,9 +17,9 @@
             </div>
         </label>
     </div>
+
     <div class="emergency-bar">
-        <span>URGENT: CALL <a href="tel:14416">14416</a> (Tele-MANAS) | <a href="tel:18005990019">1800-599-0019</a>
-            (KIRAN)</span>
+        <span>URGENT: CALL <a href="tel:14416">14416</a> (Tele-MANAS) | <a href="tel:18005990019">1800-599-0019</a> (KIRAN)</span>
     </div>
 
     <main class="container">
@@ -35,17 +29,9 @@
                 <p class="greeting">Hello, friend. Take a slow, deep breath.</p>
                 <p class="tagline">Whatever you are facing today, you don't have to face it alone. We are listening.</p>
                 <div class="voice-box">
-    <button id="voiceBtn" class="btn-voice">🎤 Speak Your Heart</button>
-    <p id="voiceStatus" class="voice-status">Tap to record your message.</p>
-
-    <div id="audioControls" class="hidden mt-4">
-        <audio id="audioPlayback" controls class="mb-3"></audio>
-        <div class="buttons-row">
-            <button id="cancelRecord" class="btn-secondary">✖ Cancel</button>
-            <button id="confirmSend" class="btn-primary-small">📧 Attach to Form</button>
-        </div>
-    </div>
-</div>
+                    <button id="voiceBtn" class="btn-voice">🎤 Speak Your Heart</button>
+                    <p id="voiceStatus" class="voice-status">Tap to record your message.</p>
+                    </div>
             </div>
         </header>
 
@@ -53,99 +39,57 @@
             <section class="card form-card">
                 <h2>Share Your Story</h2>
                 <form id="dispatchForm">
-                    <div class="input-group">
-                        <label>Your Name</label>
-                        <input type="text" id="userName" placeholder="How should we call you?" required>
-                    </div>
-
-                    <div class="input-group">
-                        <label>Contact Number</label>
-                        <input type="tel" id="userContact" placeholder="Your phone number" required>
-                    </div>
-
+                    <div class="input-group"><label>Your Name</label><input type="text" id="userName" placeholder="Name" required></div>
+                    <div class="input-group"><label>Contact</label><input type="tel" id="userContact" placeholder="Phone" required></div>
                     <div class="input-group">
                         <label>State</label>
                         <select id="userState" required>
-                            <option value="">Select State...</option>
                             <option value="Andhra Pradesh">Andhra Pradesh</option>
                             <option value="Telangana">Telangana</option>
-                            <option value="Tamil Nadu">Tamil Nadu</option>
-                            <option value="Other">Other State</option>
                         </select>
                     </div>
-
                     <div class="input-group">
                         <label>City</label>
                         <select id="userCitySelect" required>
-                            <option value="">Select City...</option>
                             <option value="Tirupati">Tirupati</option>
                             <option value="Guntur">Guntur</option>
                             <option value="Vijayawada">Vijayawada</option>
-                            <option value="Other">Other / Not Listed</option>
                         </select>
-                        <input type="text" id="otherCityInput" class="hidden mt-2"
-                            placeholder="Type your city name here...">
                     </div>
-
-                    <div class="input-group">
-                        <label>Your Story</label>
-                        <textarea id="userStory" rows="4" placeholder="Tell us what you're going through..."></textarea>
-                    </div>
-
-                    <button type="submit" class="btn-primary" id="submitBtn">SEND TO RESPONDERS</button>
+                    <div class="input-group"><label>Your Story</label><textarea id="userStory" rows="4"></textarea></div>
+                    <button type="submit" class="btn-primary">SEND TO RESPONDERS</button>
                 </form>
-                <div id="statusMsg" class="hidden"></div>
             </section>
 
             <section class="resources">
                 <div class="card resource-card urgent">
                     <h3>Direct Call Tabs</h3>
-                    <div class="call-tabs">
-                        <div class="tab-item">
-                            <span class="label">Crisis & Suicide</span>
-                            <div class="buttons-stack">
-                                <a href="tel:14416" class="btn-call active">14416 (Tele-MANAS)</a>
-                                <a href="tel:9999666555" class="btn-call">9999666555 (Vandrevala)</a>
-                            </div>
+                    <div class="tab-item">
+                        <span class="label">Crisis & Suicide</span>
+                        <div class="buttons-stack">
+                            <a href="tel:14416" class="btn-call active">14416 (Tele-MANAS)</a>
+                            <a href="tel:9999666555" class="btn-call">9999666555 (Vandrevala)</a>
                         </div>
                     </div>
-            
                     <div class="support-fact-card">
-                        <div class="fact-header">
-                            <span class="fact-icon">🕯️</span>
-                            <span class="fact-title">A Light in the Shadow</span>
-                        </div>
-                        <div class="fact-body">
-                            <p>Every year, thousands battle their darkest hours in silence, believing no one can hear their plea.</p>
-                            <p class="fact-emphasis">But your silence ends here.</p>
-                        </div>
-                        <div class="fact-footer">
-                            You were never meant to carry this weight alone. <br>
-                            <strong>We are standing here with you.</strong>
-                        </div>
+                        <p class="fact-emphasis">"But your silence ends here."</p>
+                        <p>We are standing here with you.</p>
                     </div>
                 </div>
-            
                 <div class="card resource-card" id="city-help">
-                    <h3>Verified Help Near You</h3>
-                    <p id="city-status" class="status">Hospitals based on your location will appear here.</p>
+                    <h3>Help Near You</h3>
                     <div id="hospital-list"></div>
                 </div>
             </section>
         </div>
+
         <div id="voiceModal" class="modal-overlay hidden">
             <div class="modal-content">
-                <div class="modal-icon">🕊️</div>
                 <h3>Your voice has been heard.</h3>
-                <p>We have transcribed your thoughts. We are preparing to share them with crisis responders who can help you
-                    carry this weight.</p>
-                <div class="modal-action-text">"The sun will rise again, and we will be there to see it."</div>
-                <button id="closeModal" class="btn-primary">Continue to Send</button>
+                <button id="closeModal" class="btn-primary">Continue</button>
             </div>
         </div>
     </main>
-
     <script src="script.js"></script>
 </body>
-
 </html>
