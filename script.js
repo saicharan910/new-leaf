@@ -1,3 +1,4 @@
+// --- 1. CONFIGURATION & DATA ---
 const cityData = {
     "Tirupati": [{ name: "Ruia Psychiatry Block", phone: "08772286666" }],
     "Guntur": [{ name: "Sanjeevini Hospital", phone: "08499911117" }],
@@ -8,88 +9,85 @@ const cityData = {
 const citySelect = document.getElementById('userCitySelect');
 const otherCityInput = document.getElementById('otherCityInput');
 const voiceBtn = document.getElementById('voiceBtn');
+const voiceStatus = document.getElementById('voiceStatus');
 const storyArea = document.getElementById('userStory');
 
-// 1. Voice Recognition Logic with Manual Stop Toggle
-const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+// --- 2. DYNAMIC AUDIO UI SETUP ---
+// We create the playback controls via JS so you don't have to change your HTML again
+const audioContainer = document.createElement('div');
+audioContainer.id = 'audioPreview';
+audioContainer.className = 'hidden mt-4 text-center';
+audioContainer.innerHTML = `
+    <audio id="audioPlayback" controls class="mb-3" style="width: 100%; max-width: 300px; margin-bottom: 15px;"></audio>
+    <div style="display: flex; gap: 10px; justify-content: center;">
+        <button id="cancelRecord" style="background:#64748b; color:white; border:none; padding:10px 20px; border-radius:10px; cursor:pointer;">✖ Cancel</button>
+        <button id="confirmSend" style="background:#7d9d85; color:white; border:none; padding:10px 20px; border-radius:10px; cursor:pointer;">📧 Attach Message</button>
+    </div>
+`;
+document.querySelector('.voice-box').appendChild(audioContainer);
 
-if (SpeechRecognition) {
-    const recognition = new SpeechRecognition();
-    recognition.continuous = true; // Keeps listening even if user pauses
-    recognition.lang = 'en-IN';
-    recognition.interimResults = false;
+// --- 3. VOICE RECORDING LOGIC (MediaRecorder) ---
+let mediaRecorder;
+let audioChunks = [];
+let audioBlob;
+let audioUrl;
 
-    let isRecording = false;
+voiceBtn.addEventListener('click', async () => {
+    if (!mediaRecorder || mediaRecorder.state === 'inactive') {
+        try {
+            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+            mediaRecorder = new MediaRecorder(stream);
+            audioChunks = [];
 
-    voiceBtn.addEventListener('click', () => {
-        if (!isRecording) {
-            // START STATE
-            try {
-                recognition.start();
-                isRecording = true;
-                voiceBtn.classList.add('recording');
-                // Using HTML entity for the square symbol
-                voiceBtn.innerHTML = "<span>■</span> Stop Speaking";
-                document.getElementById('voiceStatus').innerText = "Listening to you... Tap the square when you are finished.";
-            } catch (err) {
-                console.error("Recognition already started or blocked", err);
-            }
-        } else {
-            // STOP STATE (Manual Stop)
-            recognition.stop();
-            resetVoiceBtn();
+            mediaRecorder.ondataavailable = (event) => audioChunks.push(event.data);
+
+            mediaRecorder.onstop = () => {
+                audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+                audioUrl = URL.createObjectURL(audioBlob);
+                document.getElementById('audioPlayback').src = audioUrl;
+                audioContainer.classList.remove('hidden');
+                voiceBtn.innerHTML = "🎤 Speak Your Heart";
+                voiceBtn.classList.remove('recording');
+            };
+
+            mediaRecorder.start();
+            voiceBtn.innerHTML = "<span>■</span> Stop Recording";
+            voiceBtn.classList.add('recording');
+            voiceStatus.innerText = "Recording your voice... Tap the square when done.";
+        } catch (err) {
+            alert("Microphone access denied. Please enable it in browser settings.");
         }
-    });
-
-    recognition.onresult = (event) => {
-        // Get the latest transcript piece
-        const current = event.resultIndex;
-        const transcript = event.results[current][0].transcript;
-
-        // Append it to your story area with a space
-        storyArea.value += transcript + " ";
-    };
-
-    recognition.onend = () => {
-        // Safety reset if the browser cuts the mic naturally
-        resetVoiceBtn();
-    };
-
-    recognition.onerror = (event) => {
-        console.error("Speech Recognition Error: ", event.error);
-        resetVoiceBtn();
-    };
-
-    
-    // ... inside your SpeechRecognition logic ...
-
-    function resetVoiceBtn() {
-        isRecording = false;
-        voiceBtn.classList.remove('recording');
-        voiceBtn.innerHTML = "🎤 Speak Your Heart";
-        document.getElementById('voiceStatus').innerText = "Tap to record again.  if you have more to say.";
-
-        // TRIGGER THE HOPE POPUP
-        showHopePopup();
+    } else {
+        mediaRecorder.stop();
+        voiceStatus.innerText = "Recording finished. Listen below.";
     }
+});
 
-    function showHopePopup() {
-        const modal = document.getElementById('voiceModal');
+document.getElementById('cancelRecord').addEventListener('click', () => {
+    audioContainer.classList.add('hidden');
+    voiceStatus.innerText = "Recording discarded.";
+});
+
+document.getElementById('confirmSend').addEventListener('click', () => {
+    storyArea.value += "\n[Audio Message Attached to Dispatch]";
+    audioContainer.classList.add('hidden');
+    voiceStatus.innerText = "Voice message attached. Please submit the form below.";
+    showHopePopup();
+});
+
+function showHopePopup() {
+    const modal = document.getElementById('voiceModal');
+    if (modal) {
         modal.classList.remove('hidden');
-
-        // Provide a small delay so they can read the hope message
-        document.getElementById('closeModal').onclick = function () {
+        document.getElementById('closeModal').onclick = () => {
             modal.classList.add('hidden');
-            // Scroll them down to the form so they can hit "Send"
             document.getElementById('dispatchForm').scrollIntoView({ behavior: 'smooth' });
         };
     }
 }
 
-// 2. City Logic
+// --- 4. CITY & HOSPITAL LOGIC ---
 citySelect.addEventListener('change', function () {
-    const list = document.getElementById('hospital-list');
-    const status = document.getElementById('city-status');
     if (this.value === "Other") {
         otherCityInput.classList.remove('hidden');
         renderHospitals(cityData["Other"]);
@@ -100,17 +98,38 @@ citySelect.addEventListener('change', function () {
 });
 
 function renderHospitals(hubs) {
-    document.getElementById('hospital-list').innerHTML = hubs.map(h => `<div class="hospital-item"><strong>${h.name}</strong><br><a href="tel:${h.phone}">Call: ${h.phone}</a></div>`).join('');
+    document.getElementById('hospital-list').innerHTML = hubs.map(h => `
+        <div class="hospital-item" style="margin-bottom: 10px; padding: 10px; border-left: 3px solid var(--sage);">
+            <strong>${h.name}</strong><br>
+            <a href="tel:${h.phone}" style="color: var(--sage); text-decoration: none;">Call: ${h.phone}</a>
+        </div>
+    `).join('');
 }
 
-// 3. Dispatch & Seriousness Analysis
+// --- 5. THEME SWITCHER LOGIC ---
+const toggleSwitch = document.querySelector('#checkbox');
+const currentTheme = localStorage.getItem('theme');
+
+if (currentTheme) {
+    document.documentElement.setAttribute('data-theme', currentTheme);
+    if (currentTheme === 'dark' && toggleSwitch) toggleSwitch.checked = true;
+}
+
+if (toggleSwitch) {
+    toggleSwitch.addEventListener('change', (e) => {
+        const theme = e.target.checked ? 'dark' : 'light';
+        document.documentElement.setAttribute('data-theme', theme);
+        localStorage.setItem('theme', theme);
+    });
+}
+
+// --- 6. DISPATCH FORM SUBMISSION ---
 document.getElementById('dispatchForm').onsubmit = function (e) {
     e.preventDefault();
-    const story = storyArea.value.toLowerCase();
+    const story = storyArea.value;
 
-    // Simple Urgency Analysis
     const urgentKeywords = ["now", "die", "kill", "end", "today", "help", "please"];
-    const isUrgent = urgentKeywords.some(word => story.includes(word));
+    const isUrgent = urgentKeywords.some(word => story.toLowerCase().includes(word));
     const priority = isUrgent ? "🚨 CRITICAL / HIGH EMERGENCY" : "Standard Priority";
 
     const city = (citySelect.value === "Other") ? otherCityInput.value : citySelect.value;
@@ -121,7 +140,7 @@ document.getElementById('dispatchForm').onsubmit = function (e) {
         `Name: ${document.getElementById('userName').value}\n` +
         `Contact: ${document.getElementById('userContact').value}\n` +
         `Location: ${city}, ${state}\n` +
-        `Message: ${storyArea.value}`
+        `Message: ${story}`
     );
 
     window.location.href = `mailto:help@vandrevalafoundation.com?subject=New Leaf Dispatch - ${priority}&body=${body}`;
@@ -131,89 +150,3 @@ document.getElementById('dispatchForm').onsubmit = function (e) {
         <p>Help is in motion. Please stay on this page or call <strong>14416</strong> now.</p>
     `;
 };
-
-const toggleSwitch = document.querySelector('#checkbox');
-
-function switchTheme(e) {
-    if (e.target.checked) {
-        document.documentElement.setAttribute('data-theme', 'dark');
-        localStorage.setItem('theme', 'dark');
-    } else {
-        document.documentElement.setAttribute('data-theme', 'light');
-        localStorage.setItem('theme', 'light');
-    }
-}
-
-toggleSwitch.addEventListener('change', switchTheme, false);
-
-// Check for saved user preference on load
-const currentTheme = localStorage.getItem('theme');
-if (currentTheme) {
-    document.documentElement.setAttribute('data-theme', currentTheme);
-    if (currentTheme === 'dark') {
-        toggleSwitch.checked = true;
-    }
-}
-
-let mediaRecorder;
-let audioChunks = [];
-let audioBlob;
-let audioUrl;
-
-const voiceBtn = document.getElementById('voiceBtn');
-const voiceStatus = document.getElementById('voiceStatus');
-const audioControls = document.getElementById('audioControls');
-const audioPlayback = document.getElementById('audioPlayback');
-const cancelBtn = document.getElementById('cancelRecord');
-const confirmBtn = document.getElementById('confirmSend');
-const storyArea = document.getElementById('userStory');
-
-voiceBtn.addEventListener('click', async () => {
-    if (!mediaRecorder || mediaRecorder.state === 'inactive') {
-        // START RECORDING
-        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-        mediaRecorder = new MediaRecorder(stream);
-        audioChunks = [];
-
-        mediaRecorder.ondataavailable = (event) => {
-            audioChunks.push(event.data);
-        };
-
-        mediaRecorder.onstop = () => {
-            audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
-            audioUrl = URL.createObjectURL(audioBlob);
-            audioPlayback.src = audioUrl;
-            
-            // Show preview controls
-            audioControls.classList.remove('hidden');
-            voiceBtn.innerHTML = "🎤 Speak Your Heart";
-            voiceBtn.classList.remove('recording');
-        };
-
-        mediaRecorder.start();
-        voiceBtn.innerHTML = "<span>■</span> Stop Recording";
-        voiceBtn.classList.add('recording');
-        voiceStatus.innerText = "Recording your voice... Tap the square when done.";
-    } else {
-        // STOP RECORDING
-        mediaRecorder.stop();
-        voiceStatus.innerText = "Recording finished. Listen below.";
-    }
-});
-
-// CANCEL RECORDING
-cancelBtn.addEventListener('click', () => {
-    audioChunks = [];
-    audioControls.classList.add('hidden');
-    voiceStatus.innerText = "Recording discarded. Tap to try again.";
-});
-
-// CONFIRM & ATTACH TO STORY
-confirmBtn.addEventListener('click', () => {
-    storyArea.value += "\n[Audio Message Recorded and Attached]";
-    audioControls.classList.add('hidden');
-    voiceStatus.innerText = "Voice message confirmed and attached to your story.";
-    
-    // Show the Hope Popup we made earlier
-    showHopePopup();
-});
