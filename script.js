@@ -154,3 +154,66 @@ if (currentTheme) {
         toggleSwitch.checked = true;
     }
 }
+
+let mediaRecorder;
+let audioChunks = [];
+let audioBlob;
+let audioUrl;
+
+const voiceBtn = document.getElementById('voiceBtn');
+const voiceStatus = document.getElementById('voiceStatus');
+const audioControls = document.getElementById('audioControls');
+const audioPlayback = document.getElementById('audioPlayback');
+const cancelBtn = document.getElementById('cancelRecord');
+const confirmBtn = document.getElementById('confirmSend');
+const storyArea = document.getElementById('userStory');
+
+voiceBtn.addEventListener('click', async () => {
+    if (!mediaRecorder || mediaRecorder.state === 'inactive') {
+        // START RECORDING
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        mediaRecorder = new MediaRecorder(stream);
+        audioChunks = [];
+
+        mediaRecorder.ondataavailable = (event) => {
+            audioChunks.push(event.data);
+        };
+
+        mediaRecorder.onstop = () => {
+            audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+            audioUrl = URL.createObjectURL(audioBlob);
+            audioPlayback.src = audioUrl;
+            
+            // Show preview controls
+            audioControls.classList.remove('hidden');
+            voiceBtn.innerHTML = "🎤 Speak Your Heart";
+            voiceBtn.classList.remove('recording');
+        };
+
+        mediaRecorder.start();
+        voiceBtn.innerHTML = "<span>■</span> Stop Recording";
+        voiceBtn.classList.add('recording');
+        voiceStatus.innerText = "Recording your voice... Tap the square when done.";
+    } else {
+        // STOP RECORDING
+        mediaRecorder.stop();
+        voiceStatus.innerText = "Recording finished. Listen below.";
+    }
+});
+
+// CANCEL RECORDING
+cancelBtn.addEventListener('click', () => {
+    audioChunks = [];
+    audioControls.classList.add('hidden');
+    voiceStatus.innerText = "Recording discarded. Tap to try again.";
+});
+
+// CONFIRM & ATTACH TO STORY
+confirmBtn.addEventListener('click', () => {
+    storyArea.value += "\n[Audio Message Recorded and Attached]";
+    audioControls.classList.add('hidden');
+    voiceStatus.innerText = "Voice message confirmed and attached to your story.";
+    
+    // Show the Hope Popup we made earlier
+    showHopePopup();
+});
