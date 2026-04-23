@@ -1,5 +1,4 @@
 # new-leaf
-This README file is designed to provide a professional overview of the project for your GitHub repository. It explains the purpose, the technology stack you've used (MERN skills applied to a static build), and how the "New Leaf" sanctuary functions.
 
 New Leaf Sanctuary
 "Your story isn't over yet. Let us help you turn the page."
