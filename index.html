@@ -35,9 +35,17 @@
                 <p class="greeting">Hello, friend. Take a slow, deep breath.</p>
                 <p class="tagline">Whatever you are facing today, you don't have to face it alone. We are listening.</p>
                 <div class="voice-box">
-                    <button id="voiceBtn" class="btn-voice">🎤 Speak Your Heart</button>
-                    <p id="voiceStatus" class="voice-status">Tap to start speaking. Tap the square to stop.</p>
-                </div>
+    <button id="voiceBtn" class="btn-voice">🎤 Speak Your Heart</button>
+    <p id="voiceStatus" class="voice-status">Tap to record your message.</p>
+
+    <div id="audioControls" class="hidden mt-4">
+        <audio id="audioPlayback" controls class="mb-3"></audio>
+        <div class="buttons-row">
+            <button id="cancelRecord" class="btn-secondary">✖ Cancel</button>
+            <button id="confirmSend" class="btn-primary-small">📧 Attach to Form</button>
+        </div>
+    </div>
+</div>
             </div>
         </header>
 
