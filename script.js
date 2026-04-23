@@ -1,4 +1,4 @@
-// 1. DATA CONFIGURATION
+// --- 1. DATA CONFIGURATION ---
 const cityData = {
     "Tirupati": [{ name: "Ruia Psychiatry Block", phone: "08772286666" }],
     "Guntur": [{ name: "Sanjeevini Hospital", phone: "08499911117" }],
@@ -6,29 +6,38 @@ const cityData = {
     "Other": [{ name: "National Institute (NIMHANS)", phone: "08026995000" }]
 };
 
-// 2. DOM ELEMENTS
 const citySelect = document.getElementById('userCitySelect');
 const otherCityInput = document.getElementById('otherCityInput');
 const voiceBtn = document.getElementById('voiceBtn');
 const voiceStatus = document.getElementById('voiceStatus');
 const storyArea = document.getElementById('userStory');
-const themeToggle = document.querySelector('#checkbox');
 
-// 3. DYNAMIC AUDIO UI INJECTION
+// --- 2. DYNAMIC VOICE UI INJECTION ---
 const audioContainer = document.createElement('div');
 audioContainer.id = 'audioPreview';
 audioContainer.className = 'hidden mt-4 text-center';
 audioContainer.innerHTML = `
-    <audio id="audioPlayback" controls style="width: 100%; max-width: 300px; margin-bottom: 15px;"></audio>
-    <div style="display: flex; gap: 10px; justify-content: center;">
-        <button id="cancelRecord" style="background:#64748b; color:white; border:none; padding:10px 20px; border-radius:10px; cursor:pointer;">✖ Cancel</button>
-        <button id="confirmSend" style="background:#7d9d85; color:white; border:none; padding:10px 20px; border-radius:10px; cursor:pointer;">📧 Attach Message</button>
+    <div class="audio-player-wrapper">
+        <p class="preview-label">PREVIEW YOUR MESSAGE</p>
+        <audio id="audioPlayback" class="hidden"></audio>
+        
+        <div class="playback-controls">
+            <button id="p-play" class="p-ctrl">▶ Play</button>
+            <button id="p-pause" class="p-ctrl">⏸ Pause</button>
+            <button id="p-stop" class="p-ctrl">⏹ Stop</button>
+        </div>
+
+        <div class="action-stack">
+            <button id="reRecord" class="btn-rerecord">↺ Re-record (Start Over)</button>
+            <button id="confirmSend" class="btn-confirm">📧 Confirm & Attach</button>
+        </div>
     </div>
 `;
 document.querySelector('.voice-box').appendChild(audioContainer);
 
-// 4. VOICE RECORDING (MediaRecorder API)
+// --- 3. VOICE RECORDING SYSTEM (MediaRecorder) ---
 let mediaRecorder, audioChunks = [];
+const player = document.getElementById('audioPlayback');
 
 voiceBtn.addEventListener('click', async () => {
     if (!mediaRecorder || mediaRecorder.state === 'inactive') {
@@ -40,42 +49,64 @@ voiceBtn.addEventListener('click', async () => {
             mediaRecorder.ondataavailable = (e) => audioChunks.push(e.data);
             mediaRecorder.onstop = () => {
                 const blob = new Blob(audioChunks, { type: 'audio/wav' });
-                document.getElementById('audioPlayback').src = URL.createObjectURL(blob);
+                player.src = URL.createObjectURL(blob);
                 audioContainer.classList.remove('hidden');
-                voiceBtn.innerHTML = "🎤 Speak Your Heart";
-                voiceBtn.classList.remove('recording');
+                voiceBtn.classList.add('hidden'); 
             };
 
             mediaRecorder.start();
             voiceBtn.innerHTML = "<span>■</span> Stop Recording";
             voiceBtn.classList.add('recording');
-            voiceStatus.innerText = "Recording... Tap the square to stop.";
+            voiceStatus.innerText = "Listening... Tap the square when you are finished.";
         } catch (err) {
-            alert("Please allow microphone access in your browser settings to record.");
+            alert("Microphone access is required to record your message.");
         }
     } else {
         mediaRecorder.stop();
-        voiceStatus.innerText = "Recording finished. You can play it back below.";
+        voiceStatus.innerText = "Recording saved. Review it below.";
     }
 });
 
-document.getElementById('cancelRecord').onclick = () => {
+// --- 4. PLAYBACK & RE-RECORD LOGIC ---
+document.getElementById('p-play').onclick = () => player.play();
+document.getElementById('p-pause').onclick = () => player.pause();
+document.getElementById('p-stop').onclick = () => { player.pause(); player.currentTime = 0; };
+
+document.getElementById('reRecord').onclick = () => {
     audioContainer.classList.add('hidden');
-    voiceStatus.innerText = "Recording discarded.";
+    voiceBtn.classList.remove('hidden');
+    voiceBtn.innerHTML = "🎤 Speak Your Heart";
+    voiceBtn.classList.remove('recording');
+    voiceStatus.innerText = "Previous recording cleared. Tap to start again.";
+    audioChunks = [];
 };
 
 document.getElementById('confirmSend').onclick = () => {
-    storyArea.value += "\n[Voice Message Attached to Dispatch]";
+    storyArea.value += "\n[Verified Voice Message Attached]";
     audioContainer.classList.add('hidden');
-    document.getElementById('voiceModal').classList.remove('hidden');
+    voiceBtn.classList.remove('hidden');
+    voiceStatus.innerText = "Voice message attached. Submit the form to dispatch.";
+    showHopePopup();
 };
 
-document.getElementById('closeModal').onclick = () => {
-    document.getElementById('voiceModal').classList.add('hidden');
-    document.getElementById('dispatchForm').scrollIntoView({ behavior: 'smooth' });
-};
+function showHopePopup() {
+    const modal = document.getElementById('voiceModal');
+    modal.classList.remove('hidden');
+    document.getElementById('closeModal').onclick = () => {
+        modal.classList.add('hidden');
+        document.getElementById('dispatchForm').scrollIntoView({ behavior: 'smooth' });
+    };
+}
 
-// 5. THEME TOGGLE LOGIC
+// --- 5. THEME SWITCHER ---
+const themeToggle = document.querySelector('#checkbox');
+const currentTheme = localStorage.getItem('theme');
+
+if (currentTheme) {
+    document.documentElement.setAttribute('data-theme', currentTheme);
+    if (currentTheme === 'dark' && themeToggle) themeToggle.checked = true;
+}
+
 if (themeToggle) {
     themeToggle.addEventListener('change', (e) => {
         const theme = e.target.checked ? 'dark' : 'light';
@@ -84,16 +115,8 @@ if (themeToggle) {
     });
 }
 
-// Load Preference
-const savedTheme = localStorage.getItem('theme');
-if (savedTheme) {
-    document.documentElement.setAttribute('data-theme', savedTheme);
-    if (themeToggle) themeToggle.checked = (savedTheme === 'dark');
-}
-
-// 6. CITY & HOSPITAL LOGIC
-citySelect.addEventListener('change', function() {
-    const list = document.getElementById('hospital-list');
+// --- 6. CITY LOGIC & DISPATCH ---
+citySelect.addEventListener('change', function () {
     if (this.value === "Other") {
         otherCityInput.classList.remove('hidden');
         renderHospitals(cityData["Other"]);
@@ -105,26 +128,17 @@ citySelect.addEventListener('change', function() {
 
 function renderHospitals(hubs) {
     document.getElementById('hospital-list').innerHTML = hubs.map(h => `
-        <div class="hospital-item" style="margin-bottom:15px; border-left:3px solid var(--sage); padding-left:10px;">
-            <strong>${h.name}</strong><br>
-            <a href="tel:${h.phone}" style="color:var(--sage);">Call: ${h.phone}</a>
-        </div>
+        <div class="hospital-item"><strong>${h.name}</strong><br><a href="tel:${h.phone}">Call: ${h.phone}</a></div>
     `).join('');
 }
 
-// 7. FINAL DISPATCH
-document.getElementById('dispatchForm').onsubmit = (e) => {
+document.getElementById('dispatchForm').onsubmit = function (e) {
     e.preventDefault();
     const story = storyArea.value.toLowerCase();
-    const urgentWords = ["now", "die", "kill", "end", "today", "help"];
-    const priority = urgentWords.some(w => story.includes(w)) ? "🚨 CRITICAL" : "Standard Priority";
+    const urgentKeywords = ["now", "die", "kill", "end", "today", "help"];
+    const priority = urgentKeywords.some(word => story.includes(word)) ? "🚨 CRITICAL" : "Standard";
 
-    const body = encodeURIComponent(
-        `PRIORITY: ${priority}\n` +
-        `Location: ${citySelect.value}\n` +
-        `Message: ${storyArea.value}`
-    );
-
-    window.location.href = `mailto:help@vandrevalafoundation.com?subject=New Leaf - ${priority}&body=${body}`;
-    document.querySelector('.form-card').innerHTML = `<h2>Help is in motion.</h2><p>Please stay on this page or call 14416.</p>`;
+    const body = encodeURIComponent(`PRIORITY: ${priority}\nMessage: ${storyArea.value}`);
+    window.location.href = `mailto:help@vandrevalafoundation.com?subject=New Leaf Dispatch&body=${body}`;
+    document.querySelector('.form-card').innerHTML = `<h2>Voice Heard.</h2><p>Stay on this page or call 14416.</p>`;
 };
