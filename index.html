@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Leaf | Finding Hope</title>
+    <link rel="stylesheet" href="style.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Playfair+Display:italic,wght@700&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+
+    <div class="emergency-bar">
+        <span>URGENT: CALL <a href="tel:14416">14416</a> (Tele-MANAS) | <a href="tel:18005990019">1800-599-0019</a>
+            (KIRAN)</span>
+    </div>
+
+    <main class="container">
+        <header class="hero">
+            <h1 class="logo">New Leaf</h1>
+            <div class="comfort-header">
+                <p class="greeting">Hello, friend. Take a slow, deep breath.</p>
+                <p class="tagline">Whatever you are facing today, you don't have to face it alone. We are listening.</p>
+                <div class="voice-box">
+                    <button id="voiceBtn" class="btn-voice">🎤 Speak Your Heart</button>
+                    <p id="voiceStatus" class="voice-status">Tap to record your thoughts; we will transcribe them for
+                        you.</p>
+                </div>
+            </div>
+        </header>
+
+        <div class="grid">
+            <section class="card form-card">
+                <h2>Share Your Story</h2>
+                <form id="dispatchForm">
+                    <div class="input-group">
+                        <label>Your Name</label>
+                        <input type="text" id="userName" placeholder="How should we call you?" required>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Contact Number</label>
+                        <input type="tel" id="userContact" placeholder="Your phone number" required>
+                    </div>
+
+                    <div class="input-group">
+                        <label>State</label>
+                        <select id="userState" required>
+                            <option value="">Select State...</option>
+                            <option value="Andhra Pradesh">Andhra Pradesh</option>
+                            <option value="Telangana">Telangana</option>
+                            <option value="Tamil Nadu">Tamil Nadu</option>
+                            <option value="Other">Other State</option>
+                        </select>
+                    </div>
+
+                    <div class="input-group">
+                        <label>City</label>
+                        <select id="userCitySelect" required>
+                            <option value="">Select City...</option>
+                            <option value="Tirupati">Tirupati</option>
+                            <option value="Guntur">Guntur</option>
+                            <option value="Vijayawada">Vijayawada</option>
+                            <option value="Other">Other / Not Listed</option>
+                        </select>
+                        <input type="text" id="otherCityInput" class="hidden mt-2"
+                            placeholder="Type your city name here...">
+                    </div>
+
+                    <div class="input-group">
+                        <label>Your Story</label>
+                        <textarea id="userStory" rows="4" placeholder="Tell us what you're going through..."></textarea>
+                    </div>
+
+                    <button type="submit" class="btn-primary" id="submitBtn">SEND TO RESPONDERS</button>
+                </form>
+                <div id="statusMsg" class="hidden"></div>
+            </section>
+
+            <section class="resources">
+                <div class="card resource-card urgent">
+                    <h3>Direct Call Tabs</h3>
+                    <div class="call-tabs">
+                        <div class="tab-item">
+                            <span class="label">Crisis & Suicide</span>
+                            <div class="buttons">
+                                <a href="tel:14416" class="btn-call active">14416 (Tele-MANAS)</a>
+                                <a href="tel:9999666555" class="btn-call">9999666555 (Vandrevala)</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card resource-card" id="city-help">
+                    <h3>Verified Help Near You</h3>
+                    <p id="city-status" class="status">Hospitals based on your location will appear here.</p>
+                    <div id="hospital-list"></div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
