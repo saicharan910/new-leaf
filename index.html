@@ -13,6 +13,15 @@
 
 <body>
 
+    <div class="theme-container">
+        <label class="theme-switch" for="checkbox">
+            <input type="checkbox" id="checkbox" />
+            <div class="slider round">
+                <span class="sun">☀️</span>
+                <span class="moon">🌙</span>
+            </div>
+        </label>
+    </div>
     <div class="emergency-bar">
         <span>URGENT: CALL <a href="tel:14416">14416</a> (Tele-MANAS) | <a href="tel:18005990019">1800-599-0019</a>
             (KIRAN)</span>
@@ -26,8 +35,7 @@
                 <p class="tagline">Whatever you are facing today, you don't have to face it alone. We are listening.</p>
                 <div class="voice-box">
                     <button id="voiceBtn" class="btn-voice">🎤 Speak Your Heart</button>
-                    <p id="voiceStatus" class="voice-status">Tap to record your thoughts; we will transcribe them for
-                        you.</p>
+                    <p id="voiceStatus" class="voice-status">Tap to start speaking. Tap the square to stop.</p>
                 </div>
             </div>
         </header>
@@ -86,20 +94,45 @@
                     <div class="call-tabs">
                         <div class="tab-item">
                             <span class="label">Crisis & Suicide</span>
-                            <div class="buttons">
+                            <div class="buttons-stack">
                                 <a href="tel:14416" class="btn-call active">14416 (Tele-MANAS)</a>
                                 <a href="tel:9999666555" class="btn-call">9999666555 (Vandrevala)</a>
                             </div>
                         </div>
                     </div>
+            
+                    <div class="support-fact-card">
+                        <div class="fact-header">
+                            <span class="fact-icon">🕯️</span>
+                            <span class="fact-title">A Light in the Shadow</span>
+                        </div>
+                        <div class="fact-body">
+                            <p>Every year, thousands battle their darkest hours in silence, believing no one can hear their plea.</p>
+                            <p class="fact-emphasis">But your silence ends here.</p>
+                        </div>
+                        <div class="fact-footer">
+                            You were never meant to carry this weight alone. <br>
+                            <strong>We are standing here with you.</strong>
+                        </div>
+                    </div>
                 </div>
-
+            
                 <div class="card resource-card" id="city-help">
                     <h3>Verified Help Near You</h3>
                     <p id="city-status" class="status">Hospitals based on your location will appear here.</p>
                     <div id="hospital-list"></div>
                 </div>
             </section>
+        </div>
+        <div id="voiceModal" class="modal-overlay hidden">
+            <div class="modal-content">
+                <div class="modal-icon">🕊️</div>
+                <h3>Your voice has been heard.</h3>
+                <p>We have transcribed your thoughts. We are preparing to share them with crisis responders who can help you
+                    carry this weight.</p>
+                <div class="modal-action-text">"The sun will rise again, and we will be there to see it."</div>
+                <button id="closeModal" class="btn-primary">Continue to Send</button>
+            </div>
         </div>
     </main>
 
