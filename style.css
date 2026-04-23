@@ -1,10 +1,26 @@
+/* 1. UNIFIED THEME VARIABLES */
 :root {
     --bg: #fdfbf7;
+    --card-bg: #ffffff;
+    --text-main: #2c3e50;
+    --text-muted: #64748b;
     --sage: #7d9d85;
-    --slate: #2c3e50;
+    --border: #e2e8f0;
     --red: #e63946;
+    --white: #ffffff;
 }
 
+[data-theme="dark"] {
+    --bg: #121212;
+    --card-bg: #1e1e1e;
+    --text-main: #f8fafc;
+    --text-muted: #94a3b8;
+    --sage: #a8c69f;
+    --border: #334155;
+    --white: #1e1e1e;
+}
+
+/* 2. GLOBAL STYLES */
 * {
     box-sizing: border-box;
     margin: 0;
@@ -13,10 +29,68 @@
 
 body {
     background-color: var(--bg);
-    color: var(--slate);
+    color: var(--text-main);
     font-family: 'Inter', sans-serif;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    min-height: 100vh;
 }
 
+/* 3. THEME TOGGLE (Top Right) */
+.theme-container {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    z-index: 1100;
+}
+
+.theme-switch {
+    display: inline-block;
+    height: 34px;
+    position: relative;
+    width: 60px;
+}
+
+.theme-switch input {
+    display: none;
+}
+
+.slider {
+    background-color: #ccc;
+    bottom: 0;
+    cursor: pointer;
+    left: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+    transition: .4s;
+    border-radius: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+}
+
+.slider:before {
+    background-color: white;
+    bottom: 4px;
+    content: "";
+    height: 26px;
+    left: 4px;
+    position: absolute;
+    transition: .4s;
+    width: 26px;
+    border-radius: 50%;
+    z-index: 2;
+}
+
+input:checked+.slider {
+    background-color: var(--sage);
+}
+
+input:checked+.slider:before {
+    transform: translateX(26px);
+}
+
+/* 4. LAYOUT COMPONENTS */
 .emergency-bar {
     background: var(--red);
     color: white;
@@ -35,7 +109,7 @@ body {
 .container {
     max-width: 1100px;
     margin: 0 auto;
-    padding: 20px;
+    padding: 40px 20px;
 }
 
 .logo {
@@ -43,40 +117,62 @@ body {
     font-size: 3rem;
     color: var(--sage);
     text-align: center;
-    margin-top: 20px;
 }
 
 .comfort-header {
     text-align: center;
-    margin-bottom: 30px;
-    padding: 30px;
+    margin-bottom: 40px;
+    padding: 40px 20px;
     background: rgba(125, 157, 133, 0.05);
     border-radius: 30px;
+    /* This section creates the gaps between lines */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+.greeting {
+    color: var(--text-main);
+    font-weight: 600;
+    font-size: 1.4rem;
+    margin: 0;
+    /* Reset margins to let the 'gap' handle spacing */
+}
+
+.tagline {
+    color: var(--text-muted);
+    font-size: 1.1rem;
+    max-width: 650px;
+    line-height: 1.6;
+    margin: 0;
 }
 
 .voice-box {
-    margin-top: 20px;
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    /* Space between the Mic button and the status text */
 }
 
 .btn-voice {
-    background: var(--slate);
-    color: white;
-    border: none;
-    padding: 10px 20px;
+    padding: 15px 35px;
+    font-size: 1.1rem;
     border-radius: 50px;
     cursor: pointer;
-    transition: 0.3s;
+    transition: transform 0.2s;
 }
 
-.btn-voice.recording {
-    background: var(--red);
-    animation: pulse 1.5s infinite;
+.btn-voice:active {
+    transform: scale(0.95);
 }
 
 .voice-status {
-    font-size: 0.8rem;
-    color: #94a3b8;
-    margin-top: 8px;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    font-style: italic;
 }
 
 .grid {
@@ -85,11 +181,20 @@ body {
     gap: 20px;
 }
 
+/* 5. CARDS & FORMS */
 .card {
-    background: white;
+    background-color: var(--card-bg) !important;
+    color: var(--text-main);
     padding: 25px;
     border-radius: 20px;
+    border: 1px solid var(--border);
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+}
+
+h2,
+h3 {
+    color: var(--text-main);
+    margin-bottom: 15px;
 }
 
 .input-group {
@@ -100,7 +205,7 @@ label {
     display: block;
     font-size: 0.7rem;
     font-weight: bold;
-    color: #94a3b8;
+    color: var(--text-muted);
     text-transform: uppercase;
     margin-bottom: 5px;
 }
@@ -111,9 +216,9 @@ textarea {
     width: 100%;
     padding: 12px;
     border-radius: 10px;
-    border: 1px solid #e2e8f0;
-    background: #f8fafc;
-    font-size: 1rem;
+    border: 1px solid var(--border);
+    background-color: var(--bg);
+    color: var(--text-main);
 }
 
 .btn-primary {
@@ -127,16 +232,30 @@ textarea {
     cursor: pointer;
 }
 
+/* 6. CALL TABS & SUPPORT CARD */
+.label {
+    display: block;
+    margin-bottom: 38px;
+    /* 1cm gap */
+    color: var(--text-muted);
+}
+
+.buttons-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
 .btn-call {
-    flex: 1;
-    padding: 10px;
-    border: 1px solid var(--sage);
+    display: block;
+    width: 100%;
+    padding: 12px;
+    border: 1.5px solid var(--sage);
     border-radius: 8px;
     text-decoration: none;
     text-align: center;
     color: var(--sage);
     font-weight: bold;
-    font-size: 0.8rem;
 }
 
 .btn-call.active {
@@ -144,40 +263,57 @@ textarea {
     color: white;
 }
 
-.hospital-item {
-    padding: 12px;
-    background: #f1f5f9;
-    border-left: 4px solid var(--sage);
-    border-radius: 8px;
-    margin-top: 10px;
+.support-fact-card {
+    margin-top: 35px;
+    padding: 30px;
+    background: linear-gradient(135deg, var(--card-bg) 0%, var(--bg) 100%);
+    border: 1px solid var(--sage);
+    border-radius: 24px;
+    text-align: center;
 }
 
-.hospital-item a {
+.fact-emphasis {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
     color: var(--sage);
-    font-weight: bold;
-    text-decoration: none;
+    font-size: 1.2rem;
+}
+
+/* 7. VOICE & MODAL */
+.btn-voice {
+    background: var(--text-main);
+    color: var(--bg);
+    border: none;
+    padding: 10px 20px;
+    border-radius: 50px;
+    cursor: pointer;
+}
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(8px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+}
+
+.modal-content {
+    background: var(--card-bg);
+    color: var(--text-main);
+    padding: 40px;
+    border-radius: 30px;
+    max-width: 450px;
+    text-align: center;
 }
 
 .hidden {
-    display: none;
-}
-
-.mt-2 {
-    margin-top: 10px;
-}
-
-@keyframes pulse {
-    0% {
-        opacity: 1;
-    }
-
-    50% {
-        opacity: 0.6;
-    }
-
-    100% {
-        opacity: 1;
-    }
+    display: none !important;
 }
 
 @media (max-width: 768px) {
