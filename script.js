@@ -1,14 +1,14 @@
-// --- 1. ENCOURAGEMENT ENGINE ---
-const phrases = {
-    suicide: "❤️ <strong>Everything is going to be fine.</strong> You are incredibly strong for being here. This moment is painful, but it is just a moment. Please reach out to the toll-free responders below—they are waiting to help you for free.",
-    lonely: "🫂 <strong>We are right here with you.</strong> You are not alone in this fight. This weight is heavy, but there are people ready to help you carry it. Better days are truly ahead.",
-    stress: "🌿 <strong>Take a breath.</strong> You have done so much today. It’s okay to pause and let someone else support you. You are enough, just as you are."
+// --- 1. COMFORT & ASSURANCE LOGIC ---
+const comfortMessages = {
+    suicide: "❤️ <strong>Everything is going to be fine.</strong> You are incredibly brave for sharing this. Please stay with us—this pain is temporary, but you are irreplaceable. Reach out to the toll-free numbers below right now.",
+    lonely: "🫂 <strong>You are not alone.</strong> We are standing right here with you. This feeling of isolation is a heavy cloud, but the sun is still behind it. Better days are ahead.",
+    stress: "🌿 <strong>Take a slow breath.</strong> You've carried so much for so long. It is okay to be tired. Let us help you find a path to peace, one small step at a time."
 };
 
 const keywords = {
     suicide: ["suicide", "end it", "kill myself", "die", "death", "goodbye", "hurt"],
-    lonely: ["lonely", "alone", "nobody", "isolated", "empty"],
-    stress: ["stress", "pressure", "burden", "tired", "exhausted", "cant handle"]
+    lonely: ["lonely", "alone", "nobody", "isolated", "empty", "no one cares"],
+    stress: ["stress", "handle", "pressure", "burden", "tired", "exhausted", "give up"]
 };
 
 const storyArea = document.getElementById('userStory');
@@ -17,9 +17,10 @@ const assuranceBox = document.getElementById('assurance-box');
 storyArea.addEventListener('input', () => {
     const text = storyArea.value.toLowerCase();
     let response = "";
-    if (keywords.suicide.some(w => text.includes(w))) response = phrases.suicide;
-    else if (keywords.lonely.some(w => text.includes(w))) response = phrases.lonely;
-    else if (keywords.stress.some(w => text.includes(w))) response = phrases.stress;
+    
+    if (keywords.suicide.some(w => text.includes(w))) response = comfortMessages.suicide;
+    else if (keywords.lonely.some(w => text.includes(w))) response = comfortMessages.lonely;
+    else if (keywords.stress.some(w => text.includes(w))) response = comfortMessages.stress;
 
     if (response) {
         assuranceBox.innerHTML = response;
@@ -58,25 +59,24 @@ if (SpeechRecognition) {
     };
 }
 
-// --- 4. FREE DISPATCH LOGIC ---
+// --- 4. FREE DISPATCH ---
 function dispatchFreeHelp() {
     const story = storyArea.value.trim();
-    if (!story) return alert("Please share your heart first.");
+    if (!story) return alert("Please share your heart first so we can help.");
 
-    // Primary Free Contact: Tele-MANAS (Govt of India)
-    const email = "telemanas-health@gov.in"; 
+    const email = "telemanas-health@gov.in"; // Govt of India Free Helpline
     const subject = encodeURIComponent("URGENT: Requesting Free Mental Health Support");
-    const body = encodeURIComponent(`Message from New Leaf User:\n\n${story}\n\n---\nPlease provide free guidance as per government norms.`);
+    const body = encodeURIComponent(`Message from New Leaf User:\n\n${story}\n\n---\nSource: New Leaf Finding Hope Platform`);
 
     window.location.href = `mailto:${email}?subject=${subject}&body=${body}`;
 
-    // Confirm UI
+    // Update UI to Reassure
     document.querySelector('.centered-container').innerHTML = `
         <div class="glass-card" style="text-align:center;">
-            <h2 style="color:var(--accent);">Message Sent.</h2>
-            <p>Everything is going to be fine. A request has been sent for free support. For immediate help, call the toll-free numbers below.</p>
+            <h2 style="color:var(--accent);">Message Dispatched.</h2>
+            <p>Everything is going to be fine. A request has been sent for free support. Please stay on the line with the toll-free numbers below.</p>
             <a href="tel:14416" class="btn-submit" style="display:block; text-decoration:none;">Call 14416 (Tele-MANAS)</a>
-            <a href="tel:18005990019" class="btn-voice" style="display:block; text-decoration:none; margin-top:10px;">Call 1800-599-0019 (KIRAN)</a>
+            <button onclick="location.reload()" style="background:none; border:none; color:var(--dim); margin-top:20px; cursor:pointer;">Back to Start</button>
         </div>
     `;
 }
