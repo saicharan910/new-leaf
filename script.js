@@ -1,144 +1,109 @@
-// --- 1. DATA CONFIGURATION ---
+// --- 1. CONFIGURATION ---
 const cityData = {
     "Tirupati": [{ name: "Ruia Psychiatry Block", phone: "08772286666" }],
     "Guntur": [{ name: "Sanjeevini Hospital", phone: "08499911117" }],
     "Vijayawada": [{ name: "Indlas Hospitals", phone: "08662432040" }],
-    "Other": [{ name: "National Institute (NIMHANS)", phone: "08026995000" }]
+    "Other": [{ name: "NIMHANS", phone: "08026995000" }]
 };
 
-const citySelect = document.getElementById('userCitySelect');
-const otherCityInput = document.getElementById('otherCityInput');
 const voiceBtn = document.getElementById('voiceBtn');
 const voiceStatus = document.getElementById('voiceStatus');
 const storyArea = document.getElementById('userStory');
+const langSelect = document.getElementById('langSelect');
 
-// --- 2. DYNAMIC VOICE UI INJECTION ---
-const audioContainer = document.createElement('div');
-audioContainer.id = 'audioPreview';
-audioContainer.className = 'hidden mt-4 text-center';
-audioContainer.innerHTML = `
-    <div class="audio-player-wrapper">
-        <p class="preview-label">PREVIEW YOUR MESSAGE</p>
-        <audio id="audioPlayback" class="hidden"></audio>
-        
-        <div class="playback-controls">
-            <button id="p-play" class="p-ctrl">▶ Play</button>
-            <button id="p-pause" class="p-ctrl">⏸ Pause</button>
-            <button id="p-stop" class="p-ctrl">⏹ Stop</button>
-        </div>
+// --- 2. SPEECH RECOGNITION SETUP ---
+const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+let recognition = SpeechRecognition ? new SpeechRecognition() : null;
 
-        <div class="action-stack">
-            <button id="reRecord" class="btn-rerecord">↺ Re-record (Start Over)</button>
-            <button id="confirmSend" class="btn-confirm">📧 Confirm & Attach</button>
-        </div>
-    </div>
-`;
-document.querySelector('.voice-box').appendChild(audioContainer);
+if (recognition) {
+    recognition.interimResults = false;
+    recognition.maxAlternatives = 1;
+}
 
-// --- 3. VOICE RECORDING SYSTEM (MediaRecorder) ---
+// --- 3. DUAL-MODE RECORDING (Audio + Text) ---
 let mediaRecorder, audioChunks = [];
-const player = document.getElementById('audioPlayback');
+let isRecording = false;
 
 voiceBtn.addEventListener('click', async () => {
-    if (!mediaRecorder || mediaRecorder.state === 'inactive') {
+    if (!isRecording) {
         try {
             const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
             mediaRecorder = new MediaRecorder(stream);
             audioChunks = [];
 
+            // Start Audio Record
             mediaRecorder.ondataavailable = (e) => audioChunks.push(e.data);
-            mediaRecorder.onstop = () => {
-                const blob = new Blob(audioChunks, { type: 'audio/wav' });
-                player.src = URL.createObjectURL(blob);
-                audioContainer.classList.remove('hidden');
-                voiceBtn.classList.add('hidden'); 
-            };
-
+            mediaRecorder.onstop = handleAudioStop;
             mediaRecorder.start();
-            voiceBtn.innerHTML = "<span>■</span> Stop Recording";
+
+            // Start Speech to Text
+            if (recognition) {
+                recognition.lang = langSelect.value;
+                recognition.start();
+            }
+
+            isRecording = true;
             voiceBtn.classList.add('recording');
-            voiceStatus.innerText = "Listening... Tap the square when you are finished.";
+            voiceBtn.innerHTML = "🛑 Stop & Process";
+            voiceStatus.innerText = "I am listening... Speak clearly in your chosen language.";
         } catch (err) {
-            alert("Microphone access is required to record your message.");
+            alert("Please allow microphone access to use this feature.");
         }
     } else {
         mediaRecorder.stop();
-        voiceStatus.innerText = "Recording saved. Review it below.";
+        if (recognition) recognition.stop();
+        isRecording = false;
+        voiceBtn.classList.remove('recording');
+        voiceBtn.innerHTML = "🎤 Speak Your Heart";
     }
 });
 
-// --- 4. PLAYBACK & RE-RECORD LOGIC ---
-document.getElementById('p-play').onclick = () => player.play();
-document.getElementById('p-pause').onclick = () => player.pause();
-document.getElementById('p-stop').onclick = () => { player.pause(); player.currentTime = 0; };
+function handleAudioStop() {
+    const blob = new Blob(audioChunks, { type: 'audio/wav' });
+    voiceStatus.innerText = "Voice processed and translated. Review your story below.";
+}
 
-document.getElementById('reRecord').onclick = () => {
-    audioContainer.classList.add('hidden');
-    voiceBtn.classList.remove('hidden');
-    voiceBtn.innerHTML = "🎤 Speak Your Heart";
-    voiceBtn.classList.remove('recording');
-    voiceStatus.innerText = "Previous recording cleared. Tap to start again.";
-    audioChunks = [];
-};
-
-document.getElementById('confirmSend').onclick = () => {
-    storyArea.value += "\n[Verified Voice Message Attached]";
-    audioContainer.classList.add('hidden');
-    voiceBtn.classList.remove('hidden');
-    voiceStatus.innerText = "Voice message attached. Submit the form to dispatch.";
-    showHopePopup();
-};
-
-function showHopePopup() {
-    const modal = document.getElementById('voiceModal');
-    modal.classList.remove('hidden');
-    document.getElementById('closeModal').onclick = () => {
-        modal.classList.add('hidden');
-        document.getElementById('dispatchForm').scrollIntoView({ behavior: 'smooth' });
+// --- 4. TRANSLATION EXECUTION ---
+if (recognition) {
+    recognition.onresult = async (event) => {
+        const transcript = event.results[0][0].transcript;
+        const sourceLang = langSelect.value.split('-')[0];
+        
+        voiceStatus.innerText = "Translating heart to English...";
+        
+        try {
+            const res = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(transcript)}&langpair=${sourceLang}|en`);
+            const data = await res.json();
+            const translatedText = data.responseData.translatedText;
+            storyArea.value += translatedText + ". ";
+        } catch (e) {
+            storyArea.value += `[Transcript]: ${transcript}. `;
+        }
     };
 }
 
-// --- 5. THEME SWITCHER ---
-const themeToggle = document.querySelector('#checkbox');
-const currentTheme = localStorage.getItem('theme');
-
-if (currentTheme) {
-    document.documentElement.setAttribute('data-theme', currentTheme);
-    if (currentTheme === 'dark' && themeToggle) themeToggle.checked = true;
-}
-
-if (themeToggle) {
-    themeToggle.addEventListener('change', (e) => {
-        const theme = e.target.checked ? 'dark' : 'light';
-        document.documentElement.setAttribute('data-theme', theme);
-        localStorage.setItem('theme', theme);
-    });
-}
-
-// --- 6. CITY LOGIC & DISPATCH ---
-citySelect.addEventListener('change', function () {
-    if (this.value === "Other") {
-        otherCityInput.classList.remove('hidden');
-        renderHospitals(cityData["Other"]);
-    } else {
-        otherCityInput.classList.add('hidden');
-        if (cityData[this.value]) renderHospitals(cityData[this.value]);
-    }
+// --- 5. CITY & DISPATCH LOGIC ---
+document.getElementById('userCitySelect').addEventListener('change', function() {
+    const city = this.value;
+    const list = document.getElementById('hospital-list');
+    const hospitals = cityData[city] || cityData["Other"];
+    
+    list.innerHTML = hospitals.map(h => `
+        <div class="hospital-item" style="padding:15px; border-bottom:1px solid #1a1a1a;">
+            <strong>${h.name}</strong><br>
+            <a href="tel:${h.phone}" style="color:var(--accent)">Call: ${h.phone}</a>
+        </div>
+    `).join('');
 });
 
-function renderHospitals(hubs) {
-    document.getElementById('hospital-list').innerHTML = hubs.map(h => `
-        <div class="hospital-item"><strong>${h.name}</strong><br><a href="tel:${h.phone}">Call: ${h.phone}</a></div>
-    `).join('');
-}
-
-document.getElementById('dispatchForm').onsubmit = function (e) {
+document.getElementById('dispatchForm').onsubmit = function(e) {
     e.preventDefault();
-    const story = storyArea.value.toLowerCase();
-    const urgentKeywords = ["now", "die", "kill", "end", "today", "help"];
-    const priority = urgentKeywords.some(word => story.includes(word)) ? "🚨 CRITICAL" : "Standard";
+    if(!storyArea.value.trim()) return alert("Please share your story.");
+    
+    document.getElementById('voiceModal').classList.remove('hidden');
+};
 
-    const body = encodeURIComponent(`PRIORITY: ${priority}\nMessage: ${storyArea.value}`);
-    window.location.href = `mailto:help@vandrevalafoundation.com?subject=New Leaf Dispatch&body=${body}`;
-    document.querySelector('.form-card').innerHTML = `<h2>Voice Heard.</h2><p>Stay on this page or call 14416.</p>`;
+document.getElementById('closeModal').onclick = () => {
+    document.getElementById('voiceModal').classList.add('hidden');
+    window.location.reload(); // Refresh for security/privacy
 };
