@@ -1,391 +1,104 @@
-/* 1. UNIFIED THEME VARIABLES */
 :root {
-    --bg: #fdfbf7;
-    --card-bg: #ffffff;
-    --text-main: #2c3e50;
-    --text-muted: #64748b;
-    --sage: #7d9d85;
-    --border: #e2e8f0;
-    --red: #e63946;
-    --white: #ffffff;
-}
-
-[data-theme="dark"] {
-    --bg: #121212;
-    --card-bg: #1e1e1e;
-    --text-main: #f8fafc;
-    --text-muted: #94a3b8;
-    --sage: #a8c69f;
-    --border: #334155;
-    --white: #1e1e1e;
-}
-
-/* 2. GLOBAL STYLES */
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
+    --bg: #000000;
+    --card: #0c0c0c;
+    --border: #1a1a1a;
+    --text: #ffffff;
+    --dim: #888888;
+    --accent: #ff4b2b;
+    --radius: 18px;
 }
 
 body {
     background-color: var(--bg);
-    color: var(--text-main);
+    color: var(--text);
     font-family: 'Inter', sans-serif;
-    transition: background-color 0.3s ease, color 0.3s ease;
-    min-height: 100vh;
-}
-
-/* 3. THEME TOGGLE (Top Right) */
-.theme-container {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    z-index: 1100;
-}
-
-.theme-switch {
-    display: inline-block;
-    height: 34px;
-    position: relative;
-    width: 60px;
-}
-
-.theme-switch input {
-    display: none;
-}
-
-.slider {
-    background-color: #ccc;
-    bottom: 0;
-    cursor: pointer;
-    left: 0;
-    position: absolute;
-    right: 0;
-    top: 0;
-    transition: .4s;
-    border-radius: 34px;
-    display: flex;
-    align-items: center;
-    justify-content: space-around;
-}
-
-.slider:before {
-    background-color: white;
-    bottom: 4px;
-    content: "";
-    height: 26px;
-    left: 4px;
-    position: absolute;
-    transition: .4s;
-    width: 26px;
-    border-radius: 50%;
-    z-index: 2;
-}
-
-input:checked+.slider {
-    background-color: var(--sage);
-}
-
-input:checked+.slider:before {
-    transform: translateX(26px);
-}
-
-/* 4. LAYOUT COMPONENTS */
-.emergency-bar {
-    background: var(--red);
-    color: white;
-    text-align: center;
-    padding: 10px;
-    font-weight: bold;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-}
-
-.emergency-bar a {
-    color: white;
-}
-
-.container {
-    max-width: 1100px;
-    margin: 0 auto;
-    padding: 40px 20px;
-}
-
-.logo {
-    font-family: 'Playfair Display', serif;
-    font-size: 3rem;
-    color: var(--sage);
-    text-align: center;
-}
-
-.comfort-header {
-    text-align: center;
-    margin-bottom: 40px;
-    padding: 40px 20px;
-    background: rgba(125, 157, 133, 0.05);
-    border-radius: 30px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 20px;
-}
-
-.greeting {
-    color: var(--text-main);
-    font-weight: 600;
-    font-size: 1.4rem;
     margin: 0;
-}
-
-.tagline {
-    color: var(--text-muted);
-    font-size: 1.1rem;
-    max-width: 650px;
     line-height: 1.6;
-    margin: 0;
 }
 
-.voice-box {
-    margin-top: 10px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 15px;
+.centered-container {
+    max-width: 650px;
+    margin: 40px auto;
+    padding: 0 20px;
+    padding-bottom: 80px;
 }
 
-/* 5. VOICE BUTTONS & ANIMATION */
-.btn-voice {
-    background: var(--text-main);
-    color: var(--bg);
-    padding: 15px 35px;
-    font-size: 1.1rem;
-    border: none;
-    border-radius: 50px;
-    cursor: pointer;
-    transition: transform 0.2s, background-color 0.3s;
-    font-weight: 600;
-}
-
-.btn-voice:active {
-    transform: scale(0.95);
-}
-
-.btn-voice.recording {
-    background-color: var(--red);
-    animation: pulse-red 2s infinite;
-    color: white;
-}
-
-@keyframes pulse-red {
-    0% { box-shadow: 0 0 0 0 rgba(230, 57, 70, 0.7); }
-    70% { box-shadow: 0 0 0 15px rgba(230, 57, 70, 0); }
-    100% { box-shadow: 0 0 0 0 rgba(230, 57, 70, 0); }
-}
-
-.voice-status {
-    font-size: 0.9rem;
-    color: var(--text-muted);
-    font-style: italic;
-}
-
-/* 6. AUDIO PLAYER & REVIEW UI */
-.audio-player-wrapper { 
-    background: var(--card-bg); 
-    padding: 25px; 
-    border-radius: 20px; 
-    border: 1px solid var(--sage); 
-    width: 100%;
-    max-width: 400px;
-    animation: slideUp 0.3s ease; 
-}
-
-.playback-controls { 
-    display: flex; 
-    gap: 10px; 
-    justify-content: center; 
-    margin-bottom: 20px; 
-}
-
-.p-ctrl { 
-    background: var(--bg); 
-    border: 1px solid var(--border); 
-    color: var(--text-main); 
-    padding: 8px 15px; 
-    border-radius: 8px; 
-    cursor: pointer; 
-    transition: 0.2s;
-}
-
-.p-ctrl:hover { 
-    background: var(--sage); 
-    color: white; 
-}
-
-.btn-rerecord { 
-    background: transparent; 
-    color: var(--red); 
-    border: 1px solid var(--red); 
-    padding: 10px; 
-    border-radius: 8px; 
-    cursor: pointer;
-    width: 100%;
-    margin-bottom: 10px;
-}
-
-.btn-confirm { 
-    background: var(--sage); 
-    color: white; 
-    border: none; 
-    padding: 12px; 
-    border-radius: 8px; 
-    font-weight: bold; 
-    cursor: pointer;
-    width: 100%;
-}
-
-audio::-webkit-media-controls-panel {
-    background-color: var(--card-bg);
-}
-
-/* 7. GRID & CARDS */
-.grid {
-    display: grid;
-    grid-template-columns: 1.3fr 1fr;
-    gap: 20px;
-}
-
-.card {
-    background-color: var(--card-bg) !important;
-    color: var(--text-main);
-    padding: 25px;
-    border-radius: 20px;
+.glass-card {
+    background: var(--card);
     border: 1px solid var(--border);
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-}
-
-h2, h3 {
-    color: var(--text-main);
-    margin-bottom: 15px;
-}
-
-.input-group {
-    margin-bottom: 15px;
-}
-
-label {
-    display: block;
-    font-size: 0.7rem;
-    font-weight: bold;
-    color: var(--text-muted);
-    text-transform: uppercase;
-    margin-bottom: 5px;
-}
-
-input, select, textarea {
-    width: 100%;
-    padding: 12px;
-    border-radius: 10px;
-    border: 1px solid var(--border);
-    background-color: var(--bg);
-    color: var(--text-main);
-}
-
-.btn-primary {
-    width: 100%;
-    padding: 15px;
-    background: var(--sage);
-    color: white;
-    border: none;
-    border-radius: 10px;
-    font-weight: bold;
-    cursor: pointer;
-}
-
-/* 8. CALL TABS & SUPPORT CARD */
-.label {
-    display: block;
-    margin-bottom: 38px; /* 1cm gap */
-    color: var(--text-muted);
-}
-
-.buttons-stack {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-}
-
-.btn-call {
-    display: block;
-    width: 100%;
-    padding: 12px;
-    border: 1.5px solid var(--sage);
-    border-radius: 8px;
-    text-decoration: none;
-    text-align: center;
-    color: var(--sage);
-    font-weight: bold;
-}
-
-.btn-call.active {
-    background: var(--sage);
-    color: white;
-}
-
-.support-fact-card {
-    margin-top: 35px;
+    border-radius: var(--radius);
     padding: 30px;
-    background: linear-gradient(135deg, var(--card-bg) 0%, var(--bg) 100%);
-    border: 1px solid var(--sage);
-    border-radius: 24px;
+    margin-bottom: 25px;
+}
+
+.app-header {
+    border-bottom: 1px solid var(--border);
+    padding: 20px 0;
     text-align: center;
+    background: rgba(0,0,0,0.8);
+    backdrop-filter: blur(10px);
+    position: sticky; top: 0; z-index: 100;
 }
 
-.fact-emphasis {
-    font-family: 'Playfair Display', serif;
-    font-style: italic;
-    color: var(--sage);
-    font-size: 1.2rem;
-}
+.logo { letter-spacing: 5px; font-weight: 800; }
 
-/* 9. MODAL & UTILITIES */
-.modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
+/* Voice Logic UI */
+.btn-voice {
     width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.7);
-    backdrop-filter: blur(8px);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 2000;
+    background: #fff;
+    color: #000;
+    border: none;
+    padding: 18px;
+    border-radius: 50px;
+    font-weight: 700;
+    font-size: 1.1rem;
+    cursor: pointer;
+    margin: 20px 0;
 }
 
-.modal-content {
-    background: var(--card-bg);
-    color: var(--text-main);
-    padding: 40px;
-    border-radius: 30px;
-    max-width: 450px;
-    text-align: center;
+.recording {
+    background: var(--accent) !important;
+    color: #fff !important;
+    animation: pulse 1.5s infinite;
 }
 
-.hidden {
-    display: none !important;
+@keyframes pulse {
+    0% { box-shadow: 0 0 0 0 rgba(255, 75, 43, 0.7); }
+    70% { box-shadow: 0 0 0 20px rgba(255, 75, 43, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(255, 75, 43, 0); }
 }
 
-@keyframes slideUp { 
-    from { opacity: 0; transform: translateY(10px); } 
-    to { opacity: 1; transform: translateY(0); } 
+select, input, textarea {
+    width: 100%;
+    background: #111;
+    border: 1px solid var(--border);
+    color: #fff;
+    padding: 12px;
+    border-radius: 10px;
+    font-family: inherit;
+    margin-top: 8px;
+    box-sizing: border-box;
 }
 
-@media (max-width: 768px) {
-    .grid {
-        grid-template-columns: 1fr;
-    }
+textarea { height: 160px; resize: none; }
+
+.btn-submit {
+    width: 100%;
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    padding: 18px;
+    border-radius: 12px;
+    font-weight: 800;
+    margin-top: 20px;
+    cursor: pointer;
 }
 
-.mt-4 { margin-top: 20px; }
-.mb-3 { margin-bottom: 15px; }
+.hidden { display: none; }
+
+/* Modal Styling */
+.modal {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.9); display: flex; align-items: center; justify-content: center; z-index: 2000;
+}
+.modal-content { background: var(--card); padding: 40px; border-radius: 20px; text-align: center; border: 1px solid var(--border); }
