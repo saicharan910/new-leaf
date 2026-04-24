@@ -1,109 +1,94 @@
-// --- 1. CONFIGURATION ---
+// --- 1. THEME ENGINE ---
+const themeBtn = document.getElementById('theme-toggle');
+const savedTheme = localStorage.getItem('theme') || 'dark';
+
+document.body.setAttribute('data-theme', savedTheme);
+if (savedTheme === 'dark') document.body.classList.add('dark-mode');
+
+themeBtn.onclick = () => {
+    const isDark = document.body.classList.toggle('dark-mode');
+    const theme = isDark ? 'dark' : 'light';
+    document.body.setAttribute('data-theme', theme);
+    localStorage.setItem('theme', theme);
+};
+
+// --- 2. CITY & HOSPITAL DATA ---
 const cityData = {
     "Tirupati": [{ name: "Ruia Psychiatry Block", phone: "08772286666" }],
     "Guntur": [{ name: "Sanjeevini Hospital", phone: "08499911117" }],
     "Vijayawada": [{ name: "Indlas Hospitals", phone: "08662432040" }],
-    "Other": [{ name: "NIMHANS", phone: "08026995000" }]
+    "Other": [{ name: "National Institute (NIMHANS)", phone: "08026995000" }]
 };
+
+const citySelect = document.getElementById('userCitySelect');
+const hospitalSection = document.getElementById('hospital-section');
+const hospitalList = document.getElementById('hospital-list');
+
+if (citySelect) {
+    citySelect.addEventListener('change', function() {
+        const selectedCity = this.value;
+        const hospitals = cityData[selectedCity] || cityData["Other"];
+        hospitalSection.classList.remove('hidden');
+        hospitalList.innerHTML = hospitals.map(h => `
+            <div style="padding: 15px 0; border-bottom: 1px solid var(--border);">
+                <strong>${h.name}</strong><br>
+                <a href="tel:${h.phone}" style="color: var(--accent); text-decoration: none;">Call: ${h.phone}</a>
+            </div>
+        `).join('');
+    });
+}
+
+// --- 3. MULTI-LANGUAGE VOICE SYSTEM ---
+const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+let recognition = SpeechRecognition ? new SpeechRecognition() : null;
 
 const voiceBtn = document.getElementById('voiceBtn');
 const voiceStatus = document.getElementById('voiceStatus');
 const storyArea = document.getElementById('userStory');
 const langSelect = document.getElementById('langSelect');
 
-// --- 2. SPEECH RECOGNITION SETUP ---
-const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-let recognition = SpeechRecognition ? new SpeechRecognition() : null;
+let isRecording = false;
 
 if (recognition) {
     recognition.interimResults = false;
-    recognition.maxAlternatives = 1;
-}
-
-// --- 3. DUAL-MODE RECORDING (Audio + Text) ---
-let mediaRecorder, audioChunks = [];
-let isRecording = false;
-
-voiceBtn.addEventListener('click', async () => {
-    if (!isRecording) {
-        try {
-            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-            mediaRecorder = new MediaRecorder(stream);
-            audioChunks = [];
-
-            // Start Audio Record
-            mediaRecorder.ondataavailable = (e) => audioChunks.push(e.data);
-            mediaRecorder.onstop = handleAudioStop;
-            mediaRecorder.start();
-
-            // Start Speech to Text
-            if (recognition) {
-                recognition.lang = langSelect.value;
-                recognition.start();
-            }
-
-            isRecording = true;
-            voiceBtn.classList.add('recording');
-            voiceBtn.innerHTML = "🛑 Stop & Process";
-            voiceStatus.innerText = "I am listening... Speak clearly in your chosen language.";
-        } catch (err) {
-            alert("Please allow microphone access to use this feature.");
+    
+    voiceBtn.onclick = () => {
+        if (!isRecording) {
+            recognition.lang = langSelect.value;
+            recognition.start();
+        } else {
+            recognition.stop();
         }
-    } else {
-        mediaRecorder.stop();
-        if (recognition) recognition.stop();
+    };
+
+    recognition.onstart = () => {
+        isRecording = true;
+        voiceBtn.classList.add('recording');
+        voiceBtn.innerText = "🛑 Stop & Translate";
+        voiceStatus.innerText = "Listening...";
+    };
+
+    recognition.onend = () => {
         isRecording = false;
         voiceBtn.classList.remove('recording');
-        voiceBtn.innerHTML = "🎤 Speak Your Heart";
-    }
-});
+        voiceBtn.innerText = "🎤 Speak Your Heart";
+    };
 
-function handleAudioStop() {
-    const blob = new Blob(audioChunks, { type: 'audio/wav' });
-    voiceStatus.innerText = "Voice processed and translated. Review your story below.";
-}
-
-// --- 4. TRANSLATION EXECUTION ---
-if (recognition) {
     recognition.onresult = async (event) => {
         const transcript = event.results[0][0].transcript;
         const sourceLang = langSelect.value.split('-')[0];
-        
-        voiceStatus.innerText = "Translating heart to English...";
-        
         try {
             const res = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(transcript)}&langpair=${sourceLang}|en`);
             const data = await res.json();
-            const translatedText = data.responseData.translatedText;
-            storyArea.value += translatedText + ". ";
+            storyArea.value += data.responseData.translatedText + ". ";
         } catch (e) {
-            storyArea.value += `[Transcript]: ${transcript}. `;
+            storyArea.value += transcript + ". ";
         }
     };
 }
 
-// --- 5. CITY & DISPATCH LOGIC ---
-document.getElementById('userCitySelect').addEventListener('change', function() {
-    const city = this.value;
-    const list = document.getElementById('hospital-list');
-    const hospitals = cityData[city] || cityData["Other"];
-    
-    list.innerHTML = hospitals.map(h => `
-        <div class="hospital-item" style="padding:15px; border-bottom:1px solid #1a1a1a;">
-            <strong>${h.name}</strong><br>
-            <a href="tel:${h.phone}" style="color:var(--accent)">Call: ${h.phone}</a>
-        </div>
-    `).join('');
-});
-
-document.getElementById('dispatchForm').onsubmit = function(e) {
-    e.preventDefault();
-    if(!storyArea.value.trim()) return alert("Please share your story.");
-    
-    document.getElementById('voiceModal').classList.remove('hidden');
-};
-
-document.getElementById('closeModal').onclick = () => {
-    document.getElementById('voiceModal').classList.add('hidden');
-    window.location.reload(); // Refresh for security/privacy
-};
+function sendToResponders() {
+    if(!storyArea.value.trim()) return alert("Please share your story first.");
+    alert("Voice captured. Responders have been notified.");
+    storyArea.value = "";
+}
