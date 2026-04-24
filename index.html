@@ -5,25 +5,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>New Leaf — Finding Hope</title>
     <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;500;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
 </head>
-<body class="midnight-theme">
-    <header class="app-header">
+<body class="dark-mode"> <header class="app-header">
         <div class="header-inner">
             <h1 class="logo">NEW LEAF</h1>
-            <div class="emergency-tag">URGENT: CALL 14416 (Tele-MANAS)</div>
+            <div class="controls">
+                <button id="theme-toggle" class="theme-btn">🌗 Mode</button>
+            </div>
         </div>
     </header>
 
-    <main class="centered-container">
+    <div class="centered-container">
         <section class="intro-section">
-            <h2>Hello, friend. Take a slow, deep breath.</h2>
-            <p>Select your language and speak your heart. Your voice is a bridge to help.</p>
+            <p class="emergency-text">URGENT: 14416 (Tele-MANAS) | 1800-599-0019</p>
+            <h2>Take a slow, deep breath.</h2>
+            <p class="subtext">Select your language, speak your heart, and we will translate your story for our responders.</p>
         </section>
 
-        <section class="voice-box glass-card">
-            <div class="lang-selection">
-                <label for="langSelect">Native Language</label>
+        <section class="glass-card voice-box">
+            <div class="input-group">
+                <label>NATIVE LANGUAGE</label>
                 <select id="langSelect">
                     <option value="te-IN">Telugu (తెలుగు)</option>
                     <option value="hi-IN">Hindi (हिन्दी)</option>
@@ -34,47 +36,33 @@
             </div>
             
             <button id="voiceBtn" class="btn-voice">🎤 Speak Your Heart</button>
-            <p id="voiceStatus" class="voice-status">Tap to record your message.</p>
+            <p id="voiceStatus">Tap to record your message.</p>
         </section>
 
-        <section class="form-card glass-card">
-            <h3>Share Your Story</h3>
-            <form id="dispatchForm">
-                <div class="input-row">
-                    <div class="input-group">
-                        <label>City</label>
-                        <select id="userCitySelect">
-                            <option value="" disabled selected>Select City...</option>
-                            <option value="Tirupati">Tirupati</option>
-                            <option value="Guntur">Guntur</option>
-                            <option value="Vijayawada">Vijayawada</option>
-                            <option value="Other">Other</option>
-                        </select>
-                    </div>
-                    <input type="text" id="otherCityInput" class="hidden" placeholder="Enter your city">
-                </div>
+        <section class="glass-card form-box">
+            <div class="input-group">
+                <label>SELECT NEAREST CITY</label>
+                <select id="userCitySelect">
+                    <option value="" disabled selected>Select City...</option>
+                    <option value="Tirupati">Tirupati</option>
+                    <option value="Guntur">Guntur</option>
+                    <option value="Vijayawada">Vijayawada</option>
+                    <option value="Other">Other</option>
+                </select>
+            </div>
 
-                <div class="input-group">
-                    <label>Your Message (Auto-Translated)</label>
-                    <textarea id="userStory" placeholder="Your spoken words will appear here in English..."></textarea>
-                </div>
+            <div class="input-group" style="margin-top: 20px;">
+                <label>YOUR STORY (ENGLISH TRANSCRIPT)</label>
+                <textarea id="userStory" placeholder="Your spoken words will appear here in English..."></textarea>
+            </div>
 
-                <button type="submit" class="btn-submit">SEND TO RESPONDERS</button>
-            </form>
+            <button onclick="sendToResponders()" class="btn-submit">SEND TO RESPONDERS</button>
         </section>
 
-        <section id="hospital-section" class="hospital-card">
+        <section id="hospital-section" class="glass-card hidden">
             <h3>Verified Help Near You</h3>
             <div id="hospital-list"></div>
         </section>
-    </main>
-
-    <div id="voiceModal" class="modal hidden">
-        <div class="modal-content">
-            <h2>Your voice has been heard.</h2>
-            <p>We have captured your message. Help is on the way.</p>
-            <button id="closeModal" class="btn-confirm">Continue</button>
-        </div>
     </div>
 
     <script src="app.js"></script>
