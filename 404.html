@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Leaf | Free Support</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+</head>
+<body class="dark-mode">
+    <header class="safety-banner">
+        <span>FREE 24/7 SUPPORT:</span>
+        <a href="tel:14416" class="emergency-link">14416</a>
+        <a href="tel:18005990019" class="emergency-link">1800-599-0019</a>
+    </header>
+
+    <header class="app-header">
+        <div class="header-inner">
+            <h1 class="logo">NEW LEAF</h1>
+            <div class="theme-switch">
+                <input type="checkbox" id="theme-checkbox" class="checkbox">
+                <label for="theme-checkbox" class="label">
+                    <span class="moon">🌙</span>
+                    <span class="sun">☀️</span>
+                    <div class="ball"></div>
+                </label>
+            </div>
+        </div>
+    </header>
+
+    <main class="centered-container">
+        <section class="soothing-intro">
+            <h2>Everything is going to be fine.</h2>
+            <p>You are using a 100% free, non-profit resource. We are here to help you find hope, without any cost.</p>
+        </section>
+
+        <section class="glass-card">
+            <div class="field-group">
+                <label>SELECT LANGUAGE</label>
+                <select id="langSelect">
+                    <option value="te-IN">Telugu (తెలుగు)</option>
+                    <option value="hi-IN">Hindi (हिन्दी)</option>
+                    <option value="ta-IN">Tamil (தமிழ்)</option>
+                    <option value="kn-IN">Kannada (ಕನ್ನಡ)</option>
+                    <option value="ml-IN">Malayalam (മലയാളം)</option>
+                </select>
+            </div>
+            <button id="voiceBtn" class="btn-voice">🎤 SPEAK YOUR HEART (FREE)</button>
+        </section>
+
+        <div id="assurance-box" class="comfort-card hidden"></div>
+
+        <section class="glass-card">
+            <label>YOUR STORY</label>
+            <textarea id="userStory" placeholder="Speak or type what you are feeling..."></textarea>
+            <button class="btn-submit" onclick="dispatchFreeHelp()">GET FREE SUPPORT NOW</button>
+        </section>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
