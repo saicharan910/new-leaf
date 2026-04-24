@@ -1,94 +1,82 @@
-// --- 1. THEME ENGINE ---
-const themeBtn = document.getElementById('theme-toggle');
-const savedTheme = localStorage.getItem('theme') || 'dark';
-
-document.body.setAttribute('data-theme', savedTheme);
-if (savedTheme === 'dark') document.body.classList.add('dark-mode');
-
-themeBtn.onclick = () => {
-    const isDark = document.body.classList.toggle('dark-mode');
-    const theme = isDark ? 'dark' : 'light';
-    document.body.setAttribute('data-theme', theme);
-    localStorage.setItem('theme', theme);
+// --- 1. ENCOURAGEMENT ENGINE ---
+const phrases = {
+    suicide: "❤️ <strong>Everything is going to be fine.</strong> You are incredibly strong for being here. This moment is painful, but it is just a moment. Please reach out to the toll-free responders below—they are waiting to help you for free.",
+    lonely: "🫂 <strong>We are right here with you.</strong> You are not alone in this fight. This weight is heavy, but there are people ready to help you carry it. Better days are truly ahead.",
+    stress: "🌿 <strong>Take a breath.</strong> You have done so much today. It’s okay to pause and let someone else support you. You are enough, just as you are."
 };
 
-// --- 2. CITY & HOSPITAL DATA ---
-const cityData = {
-    "Tirupati": [{ name: "Ruia Psychiatry Block", phone: "08772286666" }],
-    "Guntur": [{ name: "Sanjeevini Hospital", phone: "08499911117" }],
-    "Vijayawada": [{ name: "Indlas Hospitals", phone: "08662432040" }],
-    "Other": [{ name: "National Institute (NIMHANS)", phone: "08026995000" }]
+const keywords = {
+    suicide: ["suicide", "end it", "kill myself", "die", "death", "goodbye", "hurt"],
+    lonely: ["lonely", "alone", "nobody", "isolated", "empty"],
+    stress: ["stress", "pressure", "burden", "tired", "exhausted", "cant handle"]
 };
 
-const citySelect = document.getElementById('userCitySelect');
-const hospitalSection = document.getElementById('hospital-section');
-const hospitalList = document.getElementById('hospital-list');
-
-if (citySelect) {
-    citySelect.addEventListener('change', function() {
-        const selectedCity = this.value;
-        const hospitals = cityData[selectedCity] || cityData["Other"];
-        hospitalSection.classList.remove('hidden');
-        hospitalList.innerHTML = hospitals.map(h => `
-            <div style="padding: 15px 0; border-bottom: 1px solid var(--border);">
-                <strong>${h.name}</strong><br>
-                <a href="tel:${h.phone}" style="color: var(--accent); text-decoration: none;">Call: ${h.phone}</a>
-            </div>
-        `).join('');
-    });
-}
-
-// --- 3. MULTI-LANGUAGE VOICE SYSTEM ---
-const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-let recognition = SpeechRecognition ? new SpeechRecognition() : null;
-
-const voiceBtn = document.getElementById('voiceBtn');
-const voiceStatus = document.getElementById('voiceStatus');
 const storyArea = document.getElementById('userStory');
-const langSelect = document.getElementById('langSelect');
+const assuranceBox = document.getElementById('assurance-box');
 
-let isRecording = false;
+storyArea.addEventListener('input', () => {
+    const text = storyArea.value.toLowerCase();
+    let response = "";
+    if (keywords.suicide.some(w => text.includes(w))) response = phrases.suicide;
+    else if (keywords.lonely.some(w => text.includes(w))) response = phrases.lonely;
+    else if (keywords.stress.some(w => text.includes(w))) response = phrases.stress;
 
-if (recognition) {
-    recognition.interimResults = false;
-    
-    voiceBtn.onclick = () => {
-        if (!isRecording) {
-            recognition.lang = langSelect.value;
-            recognition.start();
-        } else {
-            recognition.stop();
-        }
+    if (response) {
+        assuranceBox.innerHTML = response;
+        assuranceBox.classList.remove('hidden');
+    } else {
+        assuranceBox.classList.add('hidden');
+    }
+});
+
+// --- 2. THEME ENGINE ---
+const themeCheck = document.getElementById('theme-checkbox');
+themeCheck.addEventListener('change', () => {
+    document.body.classList.toggle('dark-mode', !themeCheck.checked);
+    document.body.setAttribute('data-theme', themeCheck.checked ? 'light' : 'dark');
+});
+
+// --- 3. VOICE ENGINE ---
+const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+if (SpeechRecognition) {
+    const recognition = new SpeechRecognition();
+    document.getElementById('voiceBtn').onclick = () => {
+        recognition.lang = document.getElementById('langSelect').value;
+        recognition.start();
     };
-
-    recognition.onstart = () => {
-        isRecording = true;
-        voiceBtn.classList.add('recording');
-        voiceBtn.innerText = "🛑 Stop & Translate";
-        voiceStatus.innerText = "Listening...";
-    };
-
-    recognition.onend = () => {
-        isRecording = false;
-        voiceBtn.classList.remove('recording');
-        voiceBtn.innerText = "🎤 Speak Your Heart";
-    };
-
     recognition.onresult = async (event) => {
         const transcript = event.results[0][0].transcript;
-        const sourceLang = langSelect.value.split('-')[0];
+        const sourceLang = document.getElementById('langSelect').value.split('-')[0];
         try {
             const res = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(transcript)}&langpair=${sourceLang}|en`);
             const data = await res.json();
             storyArea.value += data.responseData.translatedText + ". ";
+            storyArea.dispatchEvent(new Event('input'));
         } catch (e) {
             storyArea.value += transcript + ". ";
         }
     };
 }
 
-function sendToResponders() {
-    if(!storyArea.value.trim()) return alert("Please share your story first.");
-    alert("Voice captured. Responders have been notified.");
-    storyArea.value = "";
+// --- 4. FREE DISPATCH LOGIC ---
+function dispatchFreeHelp() {
+    const story = storyArea.value.trim();
+    if (!story) return alert("Please share your heart first.");
+
+    // Primary Free Contact: Tele-MANAS (Govt of India)
+    const email = "telemanas-health@gov.in"; 
+    const subject = encodeURIComponent("URGENT: Requesting Free Mental Health Support");
+    const body = encodeURIComponent(`Message from New Leaf User:\n\n${story}\n\n---\nPlease provide free guidance as per government norms.`);
+
+    window.location.href = `mailto:${email}?subject=${subject}&body=${body}`;
+
+    // Confirm UI
+    document.querySelector('.centered-container').innerHTML = `
+        <div class="glass-card" style="text-align:center;">
+            <h2 style="color:var(--accent);">Message Sent.</h2>
+            <p>Everything is going to be fine. A request has been sent for free support. For immediate help, call the toll-free numbers below.</p>
+            <a href="tel:14416" class="btn-submit" style="display:block; text-decoration:none;">Call 14416 (Tele-MANAS)</a>
+            <a href="tel:18005990019" class="btn-voice" style="display:block; text-decoration:none; margin-top:10px;">Call 1800-599-0019 (KIRAN)</a>
+        </div>
+    `;
 }
