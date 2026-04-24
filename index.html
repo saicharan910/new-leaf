@@ -8,16 +8,10 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
 </head>
 <body class="dark-mode">
-    <header class="safety-banner">
-        <span>FREE 24/7 SUPPORT:</span>
-        <a href="tel:14416" class="emergency-link">14416</a>
-        <a href="tel:18005990019" class="emergency-link">1800-599-0019</a>
-    </header>
-
     <header class="app-header">
         <div class="header-inner">
             <h1 class="logo">NEW LEAF</h1>
-            <div class="theme-switch">
+            <div class="theme-switch-container">
                 <input type="checkbox" id="theme-checkbox" class="checkbox">
                 <label for="theme-checkbox" class="label">
                     <span class="moon">🌙</span>
@@ -30,12 +24,15 @@
 
     <main class="centered-container">
         <section class="soothing-intro">
-            <h2 id="main-hope-text">Everything is going to be fine.</h2>
-            <p>You are in a safe, non-judgmental space. Take your time. We are here to listen.</p>
+            <h2 class="breathing-prompt">Hello, friend. Take a slow, deep breath.</h2>
+            <p>Everything is going to be fine. We are here to listen.</p>
+            <div class="emergency-links">
+                <a href="tel:14416" class="emergency-btn">Call 14416 (Tele-MANAS)</a>
+                <a href="tel:112" class="emergency-btn danger">Call 112</a>
+            </div>
         </section>
 
         <section class="glass-card">
-            <p class="whisper-text">Your voice matters. Speak in the language your heart knows best.</p>
             <div class="field-group">
                 <label>SELECT LANGUAGE</label>
                 <select id="langSelect">
@@ -43,19 +40,20 @@
                     <option value="hi-IN">Hindi (हिन्दी)</option>
                     <option value="ta-IN">Tamil (தமிழ்)</option>
                     <option value="kn-IN">Kannada (ಕನ್ನಡ)</option>
-                    <option value="ml-IN">Malayalam (മലയാളం)</option>
+                    <option value="ml-IN">Malayalam (മലയാളಂ)</option>
                 </select>
             </div>
             <button id="voiceBtn" class="btn-voice">🎤 SPEAK YOUR HEART (FREE)</button>
+            <p id="voiceStatus" class="whisper">Click to talk. We handle the translation.</p>
         </section>
 
         <div id="assurance-box" class="comfort-card hidden"></div>
 
         <section class="glass-card">
             <label>YOUR STORY</label>
-            <textarea id="userStory" placeholder="It's okay to not be okay. Tell us what's on your mind..."></textarea>
+            <textarea id="userStory" placeholder="Speak or type what you are feeling..."></textarea>
             <button class="btn-submit" onclick="dispatchFreeHelp()">GET FREE SUPPORT NOW</button>
-            <p class="safety-whisper">Clicking this will connect you to a responder who wants to help you find peace.</p>
+            <p class="safety-whisper">Your story is private. This will open your email to contact a free responder.</p>
         </section>
     </main>
 
