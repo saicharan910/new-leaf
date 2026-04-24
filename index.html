@@ -3,65 +3,59 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>New Leaf — Finding Hope</title>
+    <title>New Leaf | Free Support</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
 </head>
-<body class="dark-mode"> <header class="app-header">
+<body class="dark-mode">
+    <header class="safety-banner">
+        <span>FREE 24/7 SUPPORT:</span>
+        <a href="tel:14416" class="emergency-link">14416</a>
+        <a href="tel:18005990019" class="emergency-link">1800-599-0019</a>
+    </header>
+
+    <header class="app-header">
         <div class="header-inner">
             <h1 class="logo">NEW LEAF</h1>
-            <button id="theme-toggle" class="theme-btn">🌗 Mode</button>
+            <div class="theme-switch">
+                <input type="checkbox" id="theme-checkbox" class="checkbox">
+                <label for="theme-checkbox" class="label">
+                    <span class="moon">🌙</span>
+                    <span class="sun">☀️</span>
+                    <div class="ball"></div>
+                </label>
+            </div>
         </div>
     </header>
 
-    <div class="centered-container">
-        <section class="intro-section">
-            <p class="emergency-tag">URGENT: 14416 (Tele-MANAS) | 1800-599-0019</p>
-            <h2>Take a slow, deep breath.</h2>
-            <p class="subtext">Select your language and speak from your heart. We will translate your words for our responders.</p>
+    <main class="centered-container">
+        <section class="soothing-intro">
+            <h2>Everything is going to be fine.</h2>
+            <p>You are using a 100% free, non-profit resource. We are here to help you find hope, without any cost.</p>
         </section>
 
-        <section class="glass-card voice-box">
-            <div class="input-group">
-                <label>NATIVE LANGUAGE</label>
+        <section class="glass-card">
+            <div class="field-group">
+                <label>SELECT LANGUAGE</label>
                 <select id="langSelect">
                     <option value="te-IN">Telugu (తెలుగు)</option>
                     <option value="hi-IN">Hindi (हिन्दी)</option>
                     <option value="ta-IN">Tamil (தமிழ்)</option>
                     <option value="kn-IN">Kannada (ಕನ್ನಡ)</option>
-                    <option value="ml-IN">Malayalam (മലയാളం)</option>
+                    <option value="ml-IN">Malayalam (മലയാളം)</option>
                 </select>
             </div>
-            
-            <button id="voiceBtn" class="btn-voice">🎤 Speak Your Heart</button>
-            <p id="voiceStatus">Tap to record your message.</p>
+            <button id="voiceBtn" class="btn-voice">🎤 SPEAK YOUR HEART (FREE)</button>
         </section>
 
-        <section class="glass-card form-box">
-            <div class="input-group">
-                <label>SELECT NEAREST CITY</label>
-                <select id="userCitySelect">
-                    <option value="" disabled selected>Select City...</option>
-                    <option value="Tirupati">Tirupati</option>
-                    <option value="Guntur">Guntur</option>
-                    <option value="Vijayawada">Vijayawada</option>
-                    <option value="Other">Other</option>
-                </select>
-            </div>
+        <div id="assurance-box" class="comfort-card hidden"></div>
 
-            <div class="input-group" style="margin-top: 25px;">
-                <label>YOUR STORY (ENGLISH TRANSCRIPT)</label>
-                <textarea id="userStory" placeholder="Your spoken words will appear here in English..."></textarea>
-            </div>
-
-            <button onclick="sendToResponders()" class="btn-submit">SEND TO RESPONDERS</button>
+        <section class="glass-card">
+            <label>YOUR STORY</label>
+            <textarea id="userStory" placeholder="Speak or type what you are feeling..."></textarea>
+            <button class="btn-submit" onclick="dispatchFreeHelp()">GET FREE SUPPORT NOW</button>
         </section>
-
-        <section id="hospital-section" class="glass-card hidden">
-            <h3 style="margin-top:0;">Verified Help Near You</h3>
-            <div id="hospital-list"></div>
-        </section>
-    </div>
+    </main>
 
     <script src="script.js"></script>
 </body>
