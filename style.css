@@ -1,117 +1,28 @@
-:root {
-    --bg: #ffffff;
-    --surface: #f8f8f8;
-    --border: #eeeeee;
-    --text: #000000;
-    --dim: #666666;
-    --accent: #ff4b2b;
-    --radius: 20px;
-}
+:root { --bg: #fff; --surf: #f8f8f8; --text: #000; --accent: #ff4b2b; --border: #eee; }
+.dark-mode { --bg: #000; --surf: #0c0c0c; --text: #fff; --border: #1a1a1a; }
 
-[data-theme="dark"], .dark-mode {
-    --bg: #000000;
-    --surface: #0c0c0c;
-    --border: #1a1a1a;
-    --text: #ffffff;
-    --dim: #888888;
-}
+body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; margin: 0; transition: 0.3s; }
+.centered-container { max-width: 600px; margin: 40px auto; padding: 0 20px; }
 
-body {
-    background-color: var(--bg);
-    color: var(--text);
-    font-family: 'Inter', sans-serif;
-    margin: 0;
-    transition: 0.3s ease;
-}
+.safety-banner { background: var(--accent); color: white; padding: 12px; display: flex; justify-content: center; gap: 15px; font-weight: 800; position: sticky; top:0; z-index: 100; }
+.emergency-link { color: white; border: 2px solid white; padding: 4px 10px; border-radius: 20px; text-decoration: none; }
 
-/* Centering Logic */
-.centered-container {
-    max-width: 650px;
-    margin: 40px auto;
-    padding: 0 20px;
-}
+.app-header { padding: 20px; border-bottom: 1px solid var(--border); }
+.header-inner { max-width: 1000px; margin: 0 auto; display: flex; justify-content: space-between; }
+.logo { letter-spacing: 5px; font-weight: 900; margin: 0; }
 
-.app-header {
-    background: var(--bg);
-    border-bottom: 1px solid var(--border);
-    padding: 15px 0;
-    position: sticky; top: 0; z-index: 1000;
-}
+.label { background: #111; display: flex; padding: 5px; border-radius: 50px; position: relative; width: 50px; cursor: pointer; height: 26px; align-items: center; justify-content: space-between; }
+.ball { background: #fff; border-radius: 50%; position: absolute; height: 22px; width: 22px; transition: 0.3s; left: 2px; }
+.checkbox:checked + .label .ball { transform: translateX(24px); }
+.checkbox { opacity: 0; position: absolute; }
 
-.header-inner {
-    max-width: 1000px;
-    margin: 0 auto;
-    display: flex; justify-content: space-between; align-items: center;
-    padding: 0 20px;
-}
+.glass-card { background: var(--surf); border: 1px solid var(--border); padding: 30px; border-radius: 24px; margin-bottom: 20px; }
+.comfort-card { background: #111; color: #fff; padding: 20px; border-radius: 15px; border-left: 5px solid var(--accent); margin-bottom: 20px; font-style: italic; }
 
-.logo { letter-spacing: 5px; font-weight: 900; }
-.emergency-tag { color: var(--accent); font-weight: 800; font-size: 11px; }
+.btn-voice, .btn-submit { width: 100%; padding: 18px; border-radius: 50px; border: none; font-weight: 800; cursor: pointer; }
+.btn-submit { background: var(--accent); color: white; margin-top: 15px; }
+.btn-voice { background: var(--text); color: var(--bg); margin-top: 15px; }
 
-/* Components */
-.glass-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 30px;
-    margin-bottom: 30px;
-}
-
-.btn-voice {
-    width: 100%;
-    background: var(--text);
-    color: var(--bg);
-    border: none;
-    padding: 18px;
-    border-radius: 50px;
-    font-weight: 800;
-    cursor: pointer;
-    margin: 20px 0;
-}
-
-.recording {
-    background: var(--accent) !important;
-    color: #fff !important;
-    animation: pulse 1.5s infinite;
-}
-
-@keyframes pulse {
-    0% { box-shadow: 0 0 0 0 rgba(255, 75, 43, 0.6); }
-    70% { box-shadow: 0 0 0 15px rgba(255, 75, 43, 0); }
-    100% { box-shadow: 0 0 0 0 rgba(255, 75, 43, 0); }
-}
-
-select, textarea {
-    width: 100%;
-    background: var(--bg);
-    border: 1px solid var(--border);
-    color: var(--text);
-    padding: 14px;
-    border-radius: 12px;
-    box-sizing: border-box;
-}
-
-textarea { height: 180px; resize: none; margin-top: 10px;}
-
-.btn-submit {
-    width: 100%;
-    background: var(--accent);
-    color: #fff;
-    border: none;
-    padding: 18px;
-    border-radius: 12px;
-    font-weight: 800;
-    margin-top: 25px;
-    cursor: pointer;
-}
-
-.theme-btn {
-    background: var(--surface);
-    color: var(--text);
-    border: 1px solid var(--border);
-    padding: 8px 18px;
-    border-radius: 25px;
-    cursor: pointer;
-}
-
+textarea, select { width: 100%; background: var(--bg); color: var(--text); border: 1px solid var(--border); padding: 15px; border-radius: 12px; font-family: inherit; margin-top: 10px; }
+textarea { height: 180px; resize: none; }
 .hidden { display: none; }
