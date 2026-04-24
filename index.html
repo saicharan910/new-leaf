@@ -10,17 +10,15 @@
 <body class="dark-mode"> <header class="app-header">
         <div class="header-inner">
             <h1 class="logo">NEW LEAF</h1>
-            <div class="controls">
-                <button id="theme-toggle" class="theme-btn">🌗 Mode</button>
-            </div>
+            <button id="theme-toggle" class="theme-btn">🌗 Switch Mode</button>
         </div>
     </header>
 
     <div class="centered-container">
         <section class="intro-section">
-            <p class="emergency-text">URGENT: 14416 (Tele-MANAS) | 1800-599-0019</p>
-            <h2>Take a slow, deep breath.</h2>
-            <p class="subtext">Select your language, speak your heart, and we will translate your story for our responders.</p>
+            <p class="emergency-tag">URGENT: 14416 (Tele-MANAS) | 1800-599-0019</p>
+            <h2>Hello, friend. We are listening.</h2>
+            <p class="subtext">Select your language, speak from your heart, and we will translate your story for our responders.</p>
         </section>
 
         <section class="glass-card voice-box">
@@ -51,8 +49,8 @@
                 </select>
             </div>
 
-            <div class="input-group" style="margin-top: 20px;">
-                <label>YOUR STORY (ENGLISH TRANSCRIPT)</label>
+            <div class="input-group" style="margin-top: 25px;">
+                <label>YOUR MESSAGE (ENGLISH TRANSCRIPT)</label>
                 <textarea id="userStory" placeholder="Your spoken words will appear here in English..."></textarea>
             </div>
 
@@ -60,11 +58,11 @@
         </section>
 
         <section id="hospital-section" class="glass-card hidden">
-            <h3>Verified Help Near You</h3>
+            <h3 style="margin-top:0;">Verified Help Near You</h3>
             <div id="hospital-list"></div>
         </section>
     </div>
 
-    <script src="app.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
