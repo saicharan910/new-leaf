@@ -1,9 +1,26 @@
-:root { --bg: #fff; --surf: #f8f8f8; --text: #000; --accent: #ff4b2b; --border: #eee; }
-.dark-mode { --bg: #000; --surf: #0c0c0c; --text: #fff; --border: #1a1a1a; }
+:root { --bg: #fff; --surf: #f8f8f8; --text: #000; --accent: #ff4b2b; --border: #eee; --dim: #666; }
+.dark-mode { --bg: #000; --surf: #0c0c0c; --text: #fff; --border: #1a1a1a; --dim: #888; }
 
 body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; margin: 0; transition: 0.3s; }
 .centered-container { max-width: 600px; margin: 40px auto; padding: 0 20px; }
 
+/* Soothing Intro Animation */
+#main-hope-text {
+    animation: calmPulse 4s ease-in-out infinite;
+    color: var(--accent);
+    font-weight: 900;
+}
+
+@keyframes calmPulse {
+    0%, 100% { opacity: 0.7; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.03); }
+}
+
+/* Whisper Typography */
+.whisper-text { font-size: 0.9rem; color: var(--dim); margin-bottom: 15px; font-style: italic; }
+.safety-whisper { font-size: 0.8rem; color: var(--dim); margin-top: 15px; text-align: center; }
+
+/* Components */
 .safety-banner { background: var(--accent); color: white; padding: 12px; display: flex; justify-content: center; gap: 15px; font-weight: 800; position: sticky; top:0; z-index: 100; }
 .emergency-link { color: white; border: 2px solid white; padding: 4px 10px; border-radius: 20px; text-decoration: none; }
 
@@ -17,7 +34,7 @@ body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-ser
 .checkbox { opacity: 0; position: absolute; }
 
 .glass-card { background: var(--surf); border: 1px solid var(--border); padding: 30px; border-radius: 24px; margin-bottom: 20px; }
-.comfort-card { background: #111; color: #fff; padding: 20px; border-radius: 15px; border-left: 5px solid var(--accent); margin-bottom: 20px; font-style: italic; }
+.comfort-card { background: #111; color: #fff; padding: 20px; border-radius: 15px; border-left: 5px solid var(--accent); margin-bottom: 20px; font-style: italic; line-height: 1.5; }
 
 .btn-voice, .btn-submit { width: 100%; padding: 18px; border-radius: 50px; border: none; font-weight: 800; cursor: pointer; }
 .btn-submit { background: var(--accent); color: white; margin-top: 15px; }
