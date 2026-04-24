@@ -8,7 +8,6 @@
     --radius: 20px;
 }
 
-/* Midnight Black Theme */
 [data-theme="dark"], .dark-mode {
     --bg: #000000;
     --surface: #0c0c0c;
@@ -22,16 +21,14 @@ body {
     color: var(--text);
     font-family: 'Inter', sans-serif;
     margin: 0;
-    line-height: 1.6;
     transition: 0.3s ease;
 }
 
-/* Professional Spacing & Centering */
+/* Centering Logic */
 .centered-container {
     max-width: 650px;
     margin: 40px auto;
     padding: 0 20px;
-    padding-bottom: 100px;
 }
 
 .app-header {
@@ -49,17 +46,15 @@ body {
 }
 
 .logo { letter-spacing: 5px; font-weight: 900; }
-
-.emergency-tag { color: var(--accent); font-weight: 800; font-size: 11px; margin-top: 5px; }
+.emergency-tag { color: var(--accent); font-weight: 800; font-size: 11px; }
 
 /* Components */
 .glass-card {
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: var(--radius);
-    padding: 35px;
+    padding: 30px;
     margin-bottom: 30px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
 }
 
 .btn-voice {
@@ -70,7 +65,6 @@ body {
     padding: 18px;
     border-radius: 50px;
     font-weight: 800;
-    font-size: 1.1rem;
     cursor: pointer;
     margin: 20px 0;
 }
@@ -78,10 +72,10 @@ body {
 .recording {
     background: var(--accent) !important;
     color: #fff !important;
-    animation: pulse-red 1.5s infinite;
+    animation: pulse 1.5s infinite;
 }
 
-@keyframes pulse-red {
+@keyframes pulse {
     0% { box-shadow: 0 0 0 0 rgba(255, 75, 43, 0.6); }
     70% { box-shadow: 0 0 0 15px rgba(255, 75, 43, 0); }
     100% { box-shadow: 0 0 0 0 rgba(255, 75, 43, 0); }
@@ -94,12 +88,10 @@ select, textarea {
     color: var(--text);
     padding: 14px;
     border-radius: 12px;
-    font-family: inherit;
-    margin-top: 8px;
     box-sizing: border-box;
 }
 
-textarea { height: 180px; resize: none; }
+textarea { height: 180px; resize: none; margin-top: 10px;}
 
 .btn-submit {
     width: 100%;
@@ -120,7 +112,6 @@ textarea { height: 180px; resize: none; }
     padding: 8px 18px;
     border-radius: 25px;
     cursor: pointer;
-    font-weight: 600;
 }
 
 .hidden { display: none; }
