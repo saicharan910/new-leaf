@@ -74,11 +74,18 @@ if (SpeechRecognition) {
 // --- 4. REAL DISPATCH (Mailto) ---
 function dispatchFreeHelp() {
     const story = storyArea.value.trim();
+    // 1. Get the contact info from the new input field
+    const contactInput = document.getElementById('userContact');
+    const contact = contactInput ? contactInput.value.trim() : "Not provided";
+
     if (!story) return alert("Please share your heart first so we can help.");
 
     const email = "telemanas-health@gov.in"; // 100% Free Govt Helpline
     const subject = encodeURIComponent("URGENT: Requesting Free Support from New Leaf");
-    const body = encodeURIComponent(`Message from User:\n\n${story}\n\n---\nSent via New Leaf Finding Hope Platform`);
+    
+    // 2. Format the body to include the contact information
+    const emailBody = `Message from User:\n\n${story}\n\nContact Info: ${contact}\n\n---\nSent via New Leaf Finding Hope Platform`;
+    const body = encodeURIComponent(emailBody);
 
     window.location.href = `mailto:${email}?subject=${subject}&body=${body}`;
 
