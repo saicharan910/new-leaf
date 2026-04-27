@@ -53,12 +53,19 @@
 
         <div id="assurance-box" class="comfort-card hidden"></div>
 
+    
+
         <section class="glass-card">
-            <label>YOUR STORY</label>
-            <textarea id="userStory" placeholder="Speak or type what you are feeling..."></textarea>
-            <button class="btn-submit" onclick="dispatchFreeHelp()">GET FREE SUPPORT NOW</button>
-            <p class="safety-whisper">Your story is private. This will open your email to contact a free responder.</p>
-        </section>
+    <label>YOUR STORY</label>
+    <textarea id="userStory" placeholder="Speak or type what you are feeling..."></textarea>
+    
+    <label style="margin-top: 15px;">HOW CAN WE REACH YOU? (Optional)</label>
+    <input type="text" id="userContact" placeholder="Enter Email or Phone Number" 
+           style="width: 100%; padding: 12px; margin-bottom: 15px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.1); color: inherit;">
+
+    <button class="btn-submit" onclick="dispatchFreeHelp()">GET FREE SUPPORT NOW</button>
+    <p class="safety-whisper">Your story is private. This will open your email to contact a free responder.</p>
+</section>
 
         <footer class="app-footer">
             <a href="about/" class="about-link">Our Purpose & Goal</a>
